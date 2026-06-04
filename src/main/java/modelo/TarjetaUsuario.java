@@ -20,11 +20,10 @@ public class TarjetaUsuario {
     private double            saldo;
     private ArrayList<String> historialMovimientos;
 
-    private static final double TARIFA_VIAJE = 2700.0;
+    private static final double TARIFA_VIAJE = 3900.0;
     private static final String ARCHIVO      = "data/tarjeta.txt";
 
-    public TarjetaUsuario(String nombreTitular, String numeroTarjeta,
-                          double saldoInicial) {
+    public TarjetaUsuario(String nombreTitular, String numeroTarjeta,  double saldoInicial) {
         this.nombreTitular        = nombreTitular;
         this.numeroTarjeta        = numeroTarjeta;
         this.saldo                = saldoInicial;

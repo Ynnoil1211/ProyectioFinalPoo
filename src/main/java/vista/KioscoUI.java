@@ -44,7 +44,7 @@ public class KioscoUI extends JFrame {
     private JComboBox<String> cboTipoNueva;
 
     // ── Paleta de colores ───────────────────────────────────────────────────
-    private static final Color COL_PRIMARIO = new Color(0, 83, 159);
+    private static final Color COL_PRIMARIO = new Color(156, 76, 104);
     private static final Color COL_ACENTO   = new Color(255, 107, 43);
     private static final Color COL_FONDO    = new Color(245, 247, 250);
     private static final Color COL_TEXTO    = new Color(30, 40, 60);
