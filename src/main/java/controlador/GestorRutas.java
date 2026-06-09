@@ -23,7 +23,7 @@ public class GestorRutas {
 
     private ArrayList<Ruta>  rutas;
     private GrafoRutas       grafo;
-    private IAlgoritmoRuta   algoritmo;
+    private AlgoritmoDijkstra   algoritmo;
 
     private static final String ARCHIVO_RUTAS = "data/rutas.txt";
 
@@ -42,7 +42,7 @@ public class GestorRutas {
     }
 
     /** Permite cambiar el algoritmo en tiempo de ejecución. */
-    public void setAlgoritmo(IAlgoritmoRuta algoritmo) {
+    public void setAlgoritmo(AlgoritmoDijkstra algoritmo) {
         this.algoritmo = algoritmo;
     }
 

@@ -16,9 +16,7 @@ import java.util.*;
  * SOLID-OCP : implementa IAlgoritmoRuta sin modificar ninguna otra clase.
  * SOLID-SRP : solo conoce el algoritmo de búsqueda.
  */
-public class AlgoritmoDijkstra implements IAlgoritmoRuta {
-
-    @Override
+public class AlgoritmoDijkstra{
     public List<String> calcularRuta(GrafoRutas grafo, String origen,
                                      String destino, int hora) {
 
