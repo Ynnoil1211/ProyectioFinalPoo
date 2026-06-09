@@ -1,24 +1,22 @@
 package modelo;
 
 // Integrantes: [Nombre 1] - [Nombre 2]
-// Universidad de Cartagena - POO 2026-1
-// Proyecto: Kiosco Informativo TransCaribe
+// Universidad de Cartagena - POO 2026-1 | Kiosco TransCaribe v2
 
 import java.util.ArrayList;
 
 /**
- * Clase abstracta que representa una ruta del sistema TransCaribe.
- * Toda ruta es obligatoriamente RutaTroncal o RutaAlimentadora.
+ * Clase abstracta base de toda ruta del sistema TransCaribe.
  *
- * SOLID - SRP : solo conoce datos y comportamiento de una ruta.
- * SOLID - OCP : se extiende con nuevos tipos sin modificar esta clase.
- * SOLID - LSP : las subclases sustituyen a Ruta sin romper el sistema.
+ * SOLID-SRP : solo conoce datos y comportamiento de una ruta.
+ * SOLID-OCP : se extiende con nuevos tipos sin modificar esta clase.
+ * SOLID-LSP : RutaTroncal y RutaAlimentadora sustituyen a Ruta sin romper nada.
  */
 public abstract class Ruta {
 
-    private String nombreRuta;
-    private int    horaInicio;
-    private int    horaFin;
+    private String            nombreRuta;
+    private int               horaInicio;
+    private int               horaFin;
     private ArrayList<String> listadoParadas;
 
     public Ruta(String nombreRuta, int horaInicio, int horaFin,
@@ -29,55 +27,43 @@ public abstract class Ruta {
         this.listadoParadas = listadoParadas;
     }
 
-    // ── Métodos abstractos ──────────────────────────────────────────────────
+    // ── Métodos abstractos (polimorfismo) ───────────────────────────────────
 
-    /**
-     * Determina si la ruta opera a la hora indicada.
-     * Cada subclase implementa su propia lógica de horario.
-     *
-     * @param horaActual hora en formato entero (0-23)
-     * @return true si disponible, false si ya cerró
-     */
+    /** @return true si la ruta opera a la hora indicada */
     public abstract boolean calcularDisponibilidad(int horaActual);
 
-    /**
-     * Genera instrucciones de viaje entre dos puntos.
-     *
-     * @param origen  parada o estación de salida
-     * @param destino parada o barrio destino
-     * @return String con instrucciones formateadas para el kiosco
-     */
+    /** @return instrucciones formateadas para mostrar en el kiosco */
     public abstract String obtenerInstrucciones(String origen, String destino);
+
+    /** @return tipo legible: "Troncal" o "Alimentadora" */
+    public abstract String getTipo();
 
     // ── Persistencia ────────────────────────────────────────────────────────
 
     /**
-     * Serializa la ruta a formato CSV para rutas.txt
+     * Serializa la ruta a CSV para rutas.txt
      * Formato: Tipo;Nombre;HoraInicio;HoraFin;Parada1,Parada2,...
      */
     public String toCSV() {
-        String tipo    = (this instanceof RutaTroncal) ? "Troncal" : "Alimentadora";
-        String paradas = String.join(",", listadoParadas);
-        return tipo + ";" + nombreRuta + ";" + horaInicio + ";" + horaFin + ";" + paradas;
+        return getTipo() + ";" + nombreRuta + ";" + horaInicio + ";"
+                + horaFin + ";" + String.join(",", listadoParadas);
     }
 
     // ── Getters & Setters ───────────────────────────────────────────────────
 
-    public String getNombreRuta()                       { return nombreRuta; }
-    public void   setNombreRuta(String nombreRuta)      { this.nombreRuta = nombreRuta; }
-
-    public int  getHoraInicio()                         { return horaInicio; }
-    public void setHoraInicio(int horaInicio)           { this.horaInicio = horaInicio; }
-
-    public int  getHoraFin()                            { return horaFin; }
-    public void setHoraFin(int horaFin)                 { this.horaFin = horaFin; }
-
-    public ArrayList<String> getListadoParadas()        { return listadoParadas; }
-    public void setListadoParadas(ArrayList<String> l)  { this.listadoParadas = l; }
+    public String            getNombreRuta()     { return nombreRuta; }
+    public void              setNombreRuta(String v) { this.nombreRuta = v; }
+    public int               getHoraInicio()     { return horaInicio; }
+    public void              setHoraInicio(int v){ this.horaInicio = v; }
+    public int               getHoraFin()        { return horaFin; }
+    public void              setHoraFin(int v)   { this.horaFin = v; }
+    public ArrayList<String> getListadoParadas() { return listadoParadas; }
+    public void              setListadoParadas(ArrayList<String> v) { this.listadoParadas = v; }
 
     @Override
     public String toString() {
-        return nombreRuta + " (" + horaInicio + ":00-" + horaFin + ":00) | "
+        return "[" + getTipo() + "] " + nombreRuta
+                + " (" + horaInicio + ":00-" + horaFin + ":00) | "
                 + String.join(" -> ", listadoParadas);
     }
 }

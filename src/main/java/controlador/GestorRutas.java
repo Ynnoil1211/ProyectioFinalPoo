@@ -3,237 +3,211 @@ package controlador;
 // Integrantes: [Nombre 1] - [Nombre 2]
 // Universidad de Cartagena - POO 2026-1
 
+import grafo.*;
 import modelo.*;
 import excepciones.*;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 
 /**
- * Controlador principal del sistema Kiosco TransCaribe.
- * Gestiona la coleccion de rutas y toda la logica de busqueda.
+ * Controlador central de rutas.
+ * Gestiona el ArrayList<Ruta>, construye el grafo y delega
+ * la búsqueda de camino óptimo a un IAlgoritmoRuta.
  *
- * SOLID - SRP : centraliza busqueda y persistencia de rutas.
- * SOLID - OCP : agregar un nuevo tipo de ruta no requiere modificar esta clase.
- * SOLID - DIP : opera sobre ArrayList<Ruta> (abstraccion), nunca sobre
- *               RutaTroncal o RutaAlimentadora directamente.
+ * SOLID-SRP : gestiona rutas, grafo y persistencia de rutas.
+ * SOLID-OCP : el algoritmo de búsqueda es intercambiable (IAlgoritmoRuta).
+ * SOLID-DIP : depende de Ruta (abstracción) y de IAlgoritmoRuta (interfaz).
  */
 public class GestorRutas {
 
     private ArrayList<Ruta>  rutas;
-    private TarjetaUsuario   tarjeta;
+    private GrafoRutas       grafo;
+    private IAlgoritmoRuta   algoritmo;
 
     private static final String ARCHIVO_RUTAS = "data/rutas.txt";
 
-    /**
-     * Mapa de contingencia: barrio destino -> estacion troncal mas cercana.
-     * Si la ruta alimentadora ya cerro, GestorRutas consulta este mapa.
-     */
-    private static final HashMap<String, String> CONTINGENCIA = new HashMap<>();
+    private static final Map<String, String> CONTINGENCIA = new HashMap<>();
     static {
-        CONTINGENCIA.put("manga",       "Las Delicias (tome la T101)");
-        CONTINGENCIA.put("crespo",      "Ejecutivos (tome la T103)");
-        CONTINGENCIA.put("olaya",       "Las Delicias (tome la T102)");
-        CONTINGENCIA.put("bocagrande",  "Bodeguita (tome la T102)");
+        CONTINGENCIA.put("manga",      "Las Delicias (tome T101)");
+        CONTINGENCIA.put("crespo",     "Ejecutivos (tome T103)");
+        CONTINGENCIA.put("olaya",      "Las Delicias (tome T102)");
+        CONTINGENCIA.put("bocagrande", "Bodeguita (tome T102)");
     }
 
     public GestorRutas() {
-        this.rutas   = new ArrayList<>();
-        this.tarjeta = new TarjetaUsuario("Usuario", "0000000000007743", 12500);
+        this.rutas     = new ArrayList<>();
+        this.grafo     = new GrafoRutas();
+        this.algoritmo = new AlgoritmoDijkstra();   // DIP: inyectable
     }
 
-    // ── Logica de negocio ───────────────────────────────────────────────────
+    /** Permite cambiar el algoritmo en tiempo de ejecución. */
+    public void setAlgoritmo(IAlgoritmoRuta algoritmo) {
+        this.algoritmo = algoritmo;
+    }
+
+    // ── Búsqueda de ruta óptima (grafo + Dijkstra) ──────────────────────────
 
     /**
-     * Busca la ruta optima para el trayecto solicitado a la hora indicada.
+     * Busca la ruta óptima entre dos estaciones usando el grafo.
      *
-     * Este metodo recorre POLIMORFICAMENTE el ArrayList<Ruta>:
-     * cada elemento puede ser RutaTroncal o RutaAlimentadora,
-     * pero el codigo solo invoca el contrato de Ruta (DIP).
-     *
-     * @return la Ruta disponible, o null si existe ruta pero ya cerro (contingencia)
-     * @throws OrigenDestinoIdenticoException  si origen == destino
-     * @throws FueraDeServicioSistemaException si hora fuera del rango operativo
-     * @throws RutaNoEncontradaException       si ningun ruta cubre el destino
+     * @return lista de IDs de estaciones (camino mínimo), nunca null
+     * @throws OrigenDestinoIdenticoException si origen == destino
+     * @throws FueraDeServicioException       si hora fuera del rango operativo
+     * @throws RutaNoEncontradaException      si no hay camino posible
      */
-    public Ruta buscarRutaOptima(String origen, String destino, int hora)
+    public List<String> buscarRutaOptima(String origen, String destino, int hora)
             throws OrigenDestinoIdenticoException,
-            FueraDeServicioSistemaException,
+            FueraDeServicioException,
             RutaNoEncontradaException {
 
-        // Validacion 1: origen == destino
-        if (origen.equalsIgnoreCase(destino)) {
+        if (origen.equalsIgnoreCase(destino))
             throw new OrigenDestinoIdenticoException(origen);
-        }
 
-        // Validacion 2: fuera del horario del sistema
-        if (hora < 4 || hora >= 23) {
-            throw new FueraDeServicioSistemaException(hora);
-        }
+        if (hora < 4 || hora >= 23)
+            throw new FueraDeServicioException(hora);
 
-        // Busqueda polimorfica ─────────────────────────────────────────────
-        // Java resuelve en tiempo de ejecucion si llamar a
-        // RutaTroncal.calcularDisponibilidad() o RutaAlimentadora.calcularDisponibilidad()
-        for (Ruta ruta : rutas) {
-            boolean cubreDestino = ruta.getListadoParadas().stream()
-                    .anyMatch(p -> p.equalsIgnoreCase(destino));
+        List<String> camino = algoritmo.calcularRuta(grafo, origen, destino, hora);
 
-            if (cubreDestino && ruta.calcularDisponibilidad(hora)) {
-                return ruta;   // ruta disponible encontrada
-            }
-        }
-
-        // Verificar si el destino existe pero sus rutas ya cerraron
-        boolean existeRuta = rutas.stream().anyMatch(r ->
-                r.getListadoParadas().stream()
-                        .anyMatch(p -> p.equalsIgnoreCase(destino)));
-
-        if (!existeRuta) {
+        if (camino.isEmpty())
             throw new RutaNoEncontradaException(destino);
-        }
 
-        // Rutas existen pero ya cerraron -> retorna null -> activa contingencia
-        return null;
+        return camino;
     }
 
     /**
-     * Plan de contingencia cuando la ruta directa ya cerro.
-     * @param destino barrio al que queria llegar el usuario
+     * Dado un camino de IDs, devuelve instrucciones legibles para cada tramo.
+     * Recorre el camino y busca qué ruta cubre cada par consecutivo.
      */
-    public String generarContingencia(String destino) {
-        String clave = destino.toLowerCase();
-        String plan  = CONTINGENCIA.getOrDefault(clave,
-                "la estacion troncal mas cercana a su destino");
-        return "La ruta directa a " + destino + " ya cerro su servicio.\n"
-                + "Plan de contingencia: dirijase a " + plan
-                + "\ny continue en transporte alterno desde alli.";
+    public String generarInstrucciones(List<String> camino, int hora) {
+        if (camino.size() < 2) return "Ya se encuentra en el destino.";
+        StringBuilder sb = new StringBuilder();
+        sb.append("RUTA OPTIMA — ").append(camino.size() - 1)
+                .append(" tramo(s)\n");
+        sb.append("Recorrido: ").append(String.join(" -> ", camino)).append("\n");
+        sb.append("─────────────────────────────\n");
+
+        for (int i = 0; i < camino.size() - 1; i++) {
+            String desde = camino.get(i);
+            String hasta = camino.get(i + 1);
+            NodoEstacion nodo = grafo.getNodo(desde);
+            if (nodo == null) continue;
+            for (AristaRuta arista : nodo.getConexiones()) {
+                if (arista.getDestino().equalsIgnoreCase(hasta)
+                        && arista.estaDisponible(hora)) {
+                    sb.append("Tramo ").append(i + 1).append(": ")
+                            .append(desde).append(" -> ").append(hasta)
+                            .append(" | Ruta ").append(arista.getNombreRuta())
+                            .append(" (~").append(arista.getPesoMinutos())
+                            .append(" min)\n");
+                    break;
+                }
+            }
+        }
+        sb.append("Tarifa total: $")
+                .append(String.format("%.0f", (camino.size() - 1) * 2700.0));
+        return sb.toString();
     }
 
-    /** Registra la consulta en historial_consultas.txt. */
-    public void registrarConsulta(RegistroConsulta registro) {
-        registro.registrar();
+    public String generarContingencia(String destino) {
+        String plan = CONTINGENCIA.getOrDefault(
+                destino.toLowerCase(), "la estacion troncal mas cercana");
+        return "Ruta directa no disponible a " + destino + ".\n"
+                + "Contingencia: dirijase a " + plan
+                + " y continue en transporte alterno.";
     }
 
     // ── CRUD sobre rutas.txt ────────────────────────────────────────────────
 
-    /**
-     * Lee rutas.txt y reconstruye los objetos Ruta.
-     * Actua como fabrica: instancia RutaTroncal o RutaAlimentadora
-     * segun el campo Tipo de cada linea.
-     *
-     * Formato: Tipo;Nombre;HoraInicio;HoraFin;Parada1,Parada2,...[;Barrio]
-     */
     public void cargarDesdeArchivo() {
         rutas.clear();
-        File archivo = new File(ARCHIVO_RUTAS);
-        if (!archivo.exists()) {
-            cargarDatosEjemplo();
-            guardarEnArchivo();
-            return;
-        }
-        try (BufferedReader br = new BufferedReader(new FileReader(archivo))) {
+        File f = new File(ARCHIVO_RUTAS);
+        if (!f.exists()) { cargarEjemplos(); guardarEnArchivo(); return; }
+        try (BufferedReader br = new BufferedReader(new FileReader(f))) {
             String linea;
             while ((linea = br.readLine()) != null) {
                 linea = linea.trim();
                 if (linea.isEmpty() || linea.startsWith("#")) continue;
-
                 String[] p = linea.split(";");
                 if (p.length < 5) continue;
-
-                String tipo       = p[0].trim();
-                String nombre     = p[1].trim();
-                int    horaInicio = Integer.parseInt(p[2].trim());
-                int    horaFin    = Integer.parseInt(p[3].trim());
-
+                String tipo = p[0].trim();
+                String nom  = p[1].trim();
+                int    hi   = Integer.parseInt(p[2].trim());
+                int    hf   = Integer.parseInt(p[3].trim());
                 ArrayList<String> paradas = new ArrayList<>();
                 for (String s : p[4].split(",")) paradas.add(s.trim());
-
-                if (tipo.equalsIgnoreCase("Troncal")) {
-                    rutas.add(new RutaTroncal(nombre, horaInicio, horaFin, paradas));
-                } else if (tipo.equalsIgnoreCase("Alimentadora") && p.length >= 6) {
-                    rutas.add(new RutaAlimentadora(nombre, horaInicio, horaFin,
-                            paradas, p[5].trim()));
+                if ("Troncal".equalsIgnoreCase(tipo)) {
+                    rutas.add(new RutaTroncal(nom, hi, hf, paradas));
+                } else if ("Alimentadora".equalsIgnoreCase(tipo) && p.length >= 6) {
+                    rutas.add(new RutaAlimentadora(nom, hi, hf, paradas, p[5].trim()));
                 }
             }
         } catch (IOException | NumberFormatException e) {
-            System.err.println("Error al cargar rutas: " + e.getMessage());
-            cargarDatosEjemplo();
+            System.err.println("Error cargando rutas: " + e.getMessage());
+            cargarEjemplos();
         }
+        reconstruirGrafo();
     }
 
-    /**
-     * Sobreescribe rutas.txt con el estado actual de la coleccion.
-     * Se llama despues de cualquier operacion de alta o baja.
-     */
     public void guardarEnArchivo() {
         new File("data").mkdirs();
         try (PrintWriter pw = new PrintWriter(new FileWriter(ARCHIVO_RUTAS, false))) {
-            pw.println("# rutas.txt - Sistema Kiosco TransCaribe");
-            pw.println("# Formato: Tipo;Nombre;HoraInicio;HoraFin;Paradas[;Barrio]");
-            for (Ruta r : rutas) {
-                String linea = r.toCSV();
-                if (r instanceof RutaAlimentadora) {
-                    linea += ";" + ((RutaAlimentadora) r).getBarrioAsociado();
-                }
-                pw.println(linea);
-            }
+            pw.println("# rutas.txt | Formato: Tipo;Nombre;HInicio;HFin;Paradas[;Barrio]");
+            for (Ruta r : rutas) pw.println(r.toCSV());
         } catch (IOException e) {
-            System.err.println("Error al guardar rutas: " + e.getMessage());
+            System.err.println("Error guardando rutas: " + e.getMessage());
         }
     }
 
-    /** Agrega una ruta nueva y persiste el cambio (CREATE). */
-    public void agregarRuta(Ruta ruta) {
-        rutas.add(ruta);
-        guardarEnArchivo();
+    public void agregarRuta(Ruta r)  { rutas.add(r); reconstruirGrafo(); guardarEnArchivo(); }
+
+    public boolean eliminarRuta(String nombre) {
+        boolean ok = rutas.removeIf(r -> r.getNombreRuta().equalsIgnoreCase(nombre));
+        if (ok) { reconstruirGrafo(); guardarEnArchivo(); }
+        return ok;
     }
 
-    /**
-     * Elimina una ruta por nombre y persiste el cambio (DELETE).
-     * @return true si fue eliminada, false si no se encontro
-     */
-    public boolean eliminarRuta(String nombreRuta) {
-        boolean eliminada = rutas.removeIf(
-                r -> r.getNombreRuta().equalsIgnoreCase(nombreRuta));
-        if (eliminada) guardarEnArchivo();
-        return eliminada;
+    public void actualizarRuta(String nombre, Ruta nueva) {
+        eliminarRuta(nombre);
+        agregarRuta(nueva);
     }
 
-    // ── Datos de ejemplo si no existe rutas.txt ─────────────────────────────
+    private void reconstruirGrafo() {
+        grafo.construirDesdeRutas(rutas);
+    }
 
-    private void cargarDatosEjemplo() {
-        ArrayList<String> p1 = new ArrayList<>();
-        p1.add("Portal"); p1.add("Ejecutivos");
-        p1.add("Las Delicias"); p1.add("Chambacú"); p1.add("Bodeguita");
+    // ── Datos de ejemplo ────────────────────────────────────────────────────
+
+    private void cargarEjemplos() {
+        ArrayList<String> p1 = new ArrayList<>(List.of(
+                "Portal","Ejecutivos","Las Delicias","Chambacú","Bodeguita"));
         rutas.add(new RutaTroncal("T101", 5, 21, p1));
 
-        ArrayList<String> p2 = new ArrayList<>();
-        p2.add("Portal"); p2.add("Bocagrande");
-        p2.add("Las Delicias"); p2.add("Bodeguita");
+        ArrayList<String> p2 = new ArrayList<>(List.of(
+                "Portal","Bocagrande","Las Delicias","Bodeguita"));
         rutas.add(new RutaTroncal("T102", 5, 21, p2));
 
-        ArrayList<String> p3 = new ArrayList<>();
-        p3.add("Portal"); p3.add("Ejecutivos");
-        p3.add("Chambacú"); p3.add("Crespo");
+        ArrayList<String> p3 = new ArrayList<>(List.of(
+                "Portal","Ejecutivos","Chambacú","Crespo"));
         rutas.add(new RutaTroncal("T103", 5, 21, p3));
 
-        ArrayList<String> a1 = new ArrayList<>();
-        a1.add("Chambacú"); a1.add("Manga"); a1.add("Pie de la Popa");
+        ArrayList<String> a1 = new ArrayList<>(List.of(
+                "Chambacú","Manga","Pie de la Popa"));
         rutas.add(new RutaAlimentadora("A103", 5, 20, a1, "Manga"));
 
-        ArrayList<String> a2 = new ArrayList<>();
-        a2.add("Chambacú"); a2.add("Crespo"); a2.add("Marbella");
+        ArrayList<String> a2 = new ArrayList<>(List.of(
+                "Chambacú","Crespo","Marbella"));
         rutas.add(new RutaAlimentadora("A205", 5, 20, a2, "Crespo"));
 
-        ArrayList<String> a3 = new ArrayList<>();
-        a3.add("Las Delicias"); a3.add("Olaya"); a3.add("Nelson Mandela");
+        ArrayList<String> a3 = new ArrayList<>(List.of(
+                "Las Delicias","Olaya","Nelson Mandela"));
         rutas.add(new RutaAlimentadora("A310", 5, 19, a3, "Olaya"));
+
+        reconstruirGrafo();
     }
 
     // ── Getters ─────────────────────────────────────────────────────────────
 
-    public ArrayList<Ruta> getRutas()           { return rutas; }
-    public TarjetaUsuario  getTarjeta()          { return tarjeta; }
-    public void            setTarjeta(TarjetaUsuario t) { this.tarjeta = t; }
+    public ArrayList<Ruta> getRutas()   { return rutas; }
+    public GrafoRutas      getGrafo()   { return grafo; }
 }
