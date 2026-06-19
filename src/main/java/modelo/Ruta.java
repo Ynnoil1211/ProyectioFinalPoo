@@ -1,8 +1,7 @@
 package modelo;
 
-// Integrantes: [Nombre 1] - [Nombre 2]
-// Universidad de Cartagena - POO 2026-1 | Kiosco TransCaribe v2
-
+// Integrantes: Lionny Lin - 0222510050 & Samuel Campo - 0222510057
+// Universidad de Cartagena - POO 2026-1
 import java.util.ArrayList;
 
 /**

@@ -1,6 +1,5 @@
 package grafo;
-
-// Integrantes: [Nombre 1] - [Nombre 2]
+// Integrantes: Lionny Lin - 0222510050 & Samuel Campo - 0222510057
 // Universidad de Cartagena - POO 2026-1
 
 import java.util.*;

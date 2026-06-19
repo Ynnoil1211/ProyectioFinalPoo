@@ -1,8 +1,6 @@
 package excepciones;
-
-// Integrantes: [Nombre 1] - [Nombre 2]
+// Integrantes: Lionny Lin - 0222510050 & Samuel Campo - 0222510057
 // Universidad de Cartagena - POO 2026-1
-
 /**
  * Se lanza cuando el destino ingresado no tiene ninguna ruta
  * registrada en el sistema.

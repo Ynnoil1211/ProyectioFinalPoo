@@ -1,6 +1,6 @@
 package controlador;
 
-// Integrantes: [Nombre 1] - [Nombre 2]
+// Integrantes: Lionny Lin - 0222510050 & Samuel Campo - 0222510057
 // Universidad de Cartagena - POO 2026-1
 
 import grafo.*;
@@ -12,54 +12,57 @@ import java.util.*;
 
 /**
  * Controlador central de rutas.
- * Gestiona el ArrayList<Ruta>, construye el grafo y delega
- * la búsqueda de camino óptimo a un IAlgoritmoRuta.
- *
- * SOLID-SRP : gestiona rutas, grafo y persistencia de rutas.
- * SOLID-OCP : el algoritmo de búsqueda es intercambiable (IAlgoritmoRuta).
- * SOLID-DIP : depende de Ruta (abstracción) y de IAlgoritmoRuta (interfaz).
+ * Gestiona el ArrayList<Ruta>, construye el grafo y delega la búsqueda de camino óptimo a la clase AlgoritmoDijkstra.
  */
 public class GestorRutas {
 
-    private ArrayList<Ruta>  rutas;
-    private GrafoRutas       grafo;
-    private AlgoritmoDijkstra   algoritmo;
-
+    private ArrayList<Ruta> rutas;
+    private GrafoRutas grafo;
+    private AlgoritmoDijkstra algoritmo;
+    //todos los datos se guardaran en la subcarpeta data/
     private static final String ARCHIVO_RUTAS = "data/rutas.txt";
-
+        //En caso de ocurrir una RutaNoEncontradaException, se activara el plan de contingencia.
+        //Para esto, guardamos cada parada y su estacion mas cercana en un HashMap.
     private static final Map<String, String> CONTINGENCIA = new HashMap<>();
     static {
-        CONTINGENCIA.put("manga",      "Las Delicias (tome T101)");
-        CONTINGENCIA.put("crespo",     "Ejecutivos (tome T103)");
-        CONTINGENCIA.put("olaya",      "Las Delicias (tome T102)");
-        CONTINGENCIA.put("bocagrande", "Bodeguita (tome T102)");
+        //Zona norte
+        CONTINGENCIA.put("bocagrande", "Bodeguita (tome T103 o X105)");
+        CONTINGENCIA.put("crespo", "Centro o Bodeguita (tome T102)");
+        CONTINGENCIA.put("marbella", "Centro (tome T102)");
+
+        // Zona Centro
+        CONTINGENCIA.put("manga", "Las Delicias o Lo Amador (tome X105)");
+        CONTINGENCIA.put("pie de la popa", "Las Delicias (camine o tome T101)");
+        CONTINGENCIA.put("torices", "Lo Amador (camine o tome ruta alterna)");
+        CONTINGENCIA.put("getsemani", "Centro Histórico (acceso peatonal)");
+
+        // Zona Suroccidente
+        CONTINGENCIA.put("el bosque", "María Auxiliadora (tome X102)");
+        CONTINGENCIA.put("zaragocilla", "Cuatro Vientos (camine o ruta alterna)");
+
+        // Zona Sur
+        CONTINGENCIA.put("san fernando", "Madre Bernarda (tome A104)");
+        CONTINGENCIA.put("blas de lezo", "Castellana (tome A107 o A108)");
+
+        // Zona Suroriente
+        CONTINGENCIA.put("olaya", "Las Delicias o Ejecutivos (tome X104)");
     }
 
     public GestorRutas() {
-        this.rutas     = new ArrayList<>();
-        this.grafo     = new GrafoRutas();
-        this.algoritmo = new AlgoritmoDijkstra();   // DIP: inyectable
+        this.rutas = new ArrayList<>();
+        this.grafo = new GrafoRutas();
+        this.algoritmo = new AlgoritmoDijkstra();
     }
 
-    /** Permite cambiar el algoritmo en tiempo de ejecución. */
-    public void setAlgoritmo(AlgoritmoDijkstra algoritmo) {
-        this.algoritmo = algoritmo;
-    }
-
-    // ── Búsqueda de ruta óptima (grafo + Dijkstra) ──────────────────────────
-
+    // A continuacion, la implementacion para buscar la ruta mas optima usando grafo + AlgortimoDijkstra.
     /**
-     * Busca la ruta óptima entre dos estaciones usando el grafo.
-     *
      * @return lista de IDs de estaciones (camino mínimo), nunca null
      * @throws OrigenDestinoIdenticoException si origen == destino
-     * @throws FueraDeServicioException       si hora fuera del rango operativo
-     * @throws RutaNoEncontradaException      si no hay camino posible
+     * @throws FueraDeServicioException si hora fuera del rango operativo
+     * @throws RutaNoEncontradaException si no hay camino posible
      */
-    public List<String> buscarRutaOptima(String origen, String destino, int hora)
-            throws OrigenDestinoIdenticoException,
-            FueraDeServicioException,
-            RutaNoEncontradaException {
+    public List<String> buscarRutaOptima(String origen, String destino, int hora) throws
+            OrigenDestinoIdenticoException, FueraDeServicioException, RutaNoEncontradaException {
 
         if (origen.equalsIgnoreCase(destino))
             throw new OrigenDestinoIdenticoException(origen);
@@ -67,7 +70,7 @@ public class GestorRutas {
         if (hora < 4 || hora >= 23)
             throw new FueraDeServicioException(hora);
 
-        List<String> camino = algoritmo.calcularRuta(grafo, origen, destino, hora);
+        List<String> camino = this.algoritmo.calcularRuta(this.grafo, origen, destino, hora);
 
         if (camino.isEmpty())
             throw new RutaNoEncontradaException(destino);
@@ -76,14 +79,13 @@ public class GestorRutas {
     }
 
     /**
-     * Dado un camino de IDs, devuelve instrucciones legibles para cada tramo.
-     * Recorre el camino y busca qué ruta cubre cada par consecutivo.
+     * Dado un camino de IDs, devuelve instrucciones legibles para cada tramo
+     * Recorre el camino y busca qué ruta cubre cada par consecutivo
      */
     public String generarInstrucciones(List<String> camino, int hora) {
         if (camino.size() < 2) return "Ya se encuentra en el destino.";
         StringBuilder sb = new StringBuilder();
-        sb.append("RUTA OPTIMA — ").append(camino.size() - 1)
-                .append(" tramo(s)\n");
+        sb.append("RUTA OPTIMA — ").append(camino.size() - 1).append(" tramo(s)\n");
         sb.append("Recorrido: ").append(String.join(" -> ", camino)).append("\n");
         sb.append("─────────────────────────────\n");
 
@@ -93,8 +95,7 @@ public class GestorRutas {
             NodoEstacion nodo = grafo.getNodo(desde);
             if (nodo == null) continue;
             for (AristaRuta arista : nodo.getConexiones()) {
-                if (arista.getDestino().equalsIgnoreCase(hasta)
-                        && arista.estaDisponible(hora)) {
+                if (arista.getDestino().equalsIgnoreCase(hasta) && arista.estaDisponible(hora)) {
                     sb.append("Tramo ").append(i + 1).append(": ")
                             .append(desde).append(" -> ").append(hasta)
                             .append(" | Ruta ").append(arista.getNombreRuta())
@@ -104,14 +105,12 @@ public class GestorRutas {
                 }
             }
         }
-        sb.append("Tarifa total: $")
-                .append(String.format("%.0f", (camino.size() - 1) * 2700.0));
+        sb.append("Tarifa total: $").append(String.format("%.0f", (camino.size() - 1) * 3900.0));
         return sb.toString();
     }
 
     public String generarContingencia(String destino) {
-        String plan = CONTINGENCIA.getOrDefault(
-                destino.toLowerCase(), "la estacion troncal mas cercana");
+        String plan = CONTINGENCIA.getOrDefault(destino.toLowerCase(), "la estacion troncal mas cercana");
         return "Ruta directa no disponible a " + destino + ".\n"
                 + "Contingencia: dirijase a " + plan
                 + " y continue en transporte alterno.";

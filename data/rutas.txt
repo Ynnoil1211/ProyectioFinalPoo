@@ -1,0 +1,6 @@
+# rutas.txt | Formato: Tipo;Nombre;HInicio;HFin;Paradas[;Barrio]
+Troncal;T101;5;21;Portal,Ejecutivos,Las Delicias,Chambacú,Bodeguita
+Troncal;T102;5;21;Portal,Bocagrande,Las Delicias,Bodeguita
+Troncal;T103;5;21;Portal,Ejecutivos,Chambacú,Crespo
+Alimentadora;A103;5;20;Chambacú,Manga,Pie de la Popa;Manga
+Alimentadora;A205;5;20;Chambacú,Crespo,Marbella;Crespo

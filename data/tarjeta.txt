@@ -1,0 +1,13 @@
+Titular:Usuario
+Numero:0000000000007743
+Saldo:5200.0
+---Movimientos---
++ $10000 (Recarga)
+- $3900 (Viaje)
+- $3900 (Viaje)
+- $3900 (Viaje)
++ $10000 (Recarga)
+- $3900 (Viaje)
+- $3900 (Viaje)
+- $3900 (Viaje)
+- $3900 (Viaje)

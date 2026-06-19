@@ -1,6 +1,6 @@
 package grafo;
 
-// Integrantes: [Nombre 1] - [Nombre 2]
+// Integrantes: Lionny Lin - 0222510050 & Samuel Campo - 0222510057
 // Universidad de Cartagena - POO 2026-1
 
 import modelo.Ruta;
@@ -13,7 +13,7 @@ import java.util.*;
  * Cada AristaRuta es un tramo entre dos paradas consecutivas de una ruta.
  *
  * GestorRutas construye este grafo a partir de la lista de rutas cargadas
- * desde archivo, y luego delega la búsqueda a un IAlgoritmoRuta.
+ * desde archivo, y luego delega la búsqueda a la clase AlgoritmoDijkstra.
  */
 public class GrafoRutas {
 

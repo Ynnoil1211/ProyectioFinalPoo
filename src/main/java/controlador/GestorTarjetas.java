@@ -1,6 +1,6 @@
 package controlador;
 
-// Integrantes: [Nombre 1] - [Nombre 2]
+// Integrantes: Lionny Lin - 0222510050 & Samuel Campo - 0222510057
 // Universidad de Cartagena - POO 2026-1
 
 import modelo.TarjetaUsuario;
@@ -31,8 +31,7 @@ public class GestorTarjetas {
      * Busca una tarjeta por número.
      * @throws TarjetaNoEncontradaException si no existe
      */
-    public TarjetaUsuario buscarPorNumero(String numero)
-            throws TarjetaNoEncontradaException {
+    public TarjetaUsuario buscarPorNumero(String numero) throws TarjetaNoEncontradaException {
         for (TarjetaUsuario t : tarjetas) {
             if (t.getNumeroTarjeta().equalsIgnoreCase(numero)) return t;
         }

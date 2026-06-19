@@ -1,0 +1,2 @@
+# usuarios.txt | ROL;Nombre;Clave;Extra
+ADMIN;admin;admin123;Operaciones
