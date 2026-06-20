@@ -20,3 +20,5 @@
 2026-06-19 17:54;Chambacú;Portal;PORTAL;17
 2026-06-19 18:03;Chambacú;Bodeguita;BODEGUITA;17
 2026-06-19 18:09;Chambacú;Portal;PORTAL;17
+2026-06-19 18:51;Bodeguita;Portal;PORTAL;17
+2026-06-19 18:51;Bodeguita;Portal;PORTAL;17

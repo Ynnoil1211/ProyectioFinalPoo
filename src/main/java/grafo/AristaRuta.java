@@ -12,17 +12,16 @@ public class AristaRuta {
 
     private String destino;       // ID de la estación destino
     private String nombreRuta;    // ej: "T101", "A103"
-    private int    pesoMinutos;   // tiempo estimado del tramo
-    private int    horaInicio;
-    private int    horaFin;
+    private int pesoMinutos;   // tiempo estimado del tramo
+    private int horaInicio;
+    private int horaFin;
 
-    public AristaRuta(String destino, String nombreRuta,
-                      int pesoMinutos, int horaInicio, int horaFin) {
-        this.destino     = destino;
-        this.nombreRuta  = nombreRuta;
+    public AristaRuta(String destino, String nombreRuta, int pesoMinutos, int horaInicio, int horaFin) {
+        this.destino = destino;
+        this.nombreRuta = nombreRuta;
         this.pesoMinutos = pesoMinutos;
-        this.horaInicio  = horaInicio;
-        this.horaFin     = horaFin;
+        this.horaInicio = horaInicio;
+        this.horaFin = horaFin;
     }
 
     /** @return true si esta arista opera a la hora indicada */
@@ -32,9 +31,9 @@ public class AristaRuta {
 
     public String getDestino()     { return destino; }
     public String getNombreRuta()  { return nombreRuta; }
-    public int    getPesoMinutos() { return pesoMinutos; }
-    public int    getHoraInicio()  { return horaInicio; }
-    public int    getHoraFin()     { return horaFin; }
+    public int getPesoMinutos() { return pesoMinutos; }
+    public int getHoraInicio()  { return horaInicio; }
+    public int getHoraFin()     { return horaFin; }
 
     @Override
     public String toString() {

@@ -8,31 +8,25 @@ import java.util.*;
 
 /**
  * Grafo dirigido y ponderado de la red TransCaribe.
- *
  * Cada NodoEstacion es una parada física.
  * Cada AristaRuta es un tramo entre dos paradas consecutivas de una ruta.
- *
  * GestorRutas construye este grafo a partir de la lista de rutas cargadas
  * desde archivo, y luego delega la búsqueda a la clase AlgoritmoDijkstra.
  */
 public class GrafoRutas {
 
-    // mapa: idEstacion -> NodoEstacion
+    // mapa: idEstacion -> NodoEstacion (key -> value)
     private Map<String, NodoEstacion> nodos;
 
     public GrafoRutas() {
         this.nodos = new HashMap<>();
     }
 
-    // ── Construcción del grafo ──────────────────────────────────────────────
+    // Construccion del Grafo:
 
-    /**
-     * Agrega un nodo al grafo (estación).
-     * Si ya existe, lo ignora.
-     */
+    // Agrega un nodo al grafo (estación), si ya existe, lo ignora
     public void agregarNodo(String id, String nombre) {
-        nodos.putIfAbsent(id.toUpperCase(),
-                new NodoEstacion(id.toUpperCase(), nombre));
+        nodos.putIfAbsent(id.toUpperCase(), new NodoEstacion(id.toUpperCase(), nombre));
     }
 
     /**
@@ -55,16 +49,19 @@ public class GrafoRutas {
      * También agrega la arista inversa para permitir recorridos en ambas direcciones.
      */
     public void construirDesdeRutas(List<Ruta> rutas) {
+        // Ruta contiene nombre, horario y lista de paradas.
         nodos.clear();
         for (Ruta ruta : rutas) {
             List<String> paradas = ruta.getListadoParadas();
             for (String p : paradas) {
+                // Aseguremos que todas las paradas existan como nodos:
                 agregarNodo(p, p);  // nombre = ID en este caso
+                // Dado que nodos es un mapa, evitamos duplicado automaticamente
             }
             for (int i = 0; i < paradas.size() - 1; i++) {
-                String desde  = paradas.get(i).toUpperCase();
-                String hasta  = paradas.get(i + 1).toUpperCase();
-                int    peso   = 6;  // minutos estimados por tramo
+                String desde = paradas.get(i).toUpperCase();
+                String hasta = paradas.get(i + 1).toUpperCase();
+                int peso = 6;  // minutos estimados por tramo
                 agregarArista(desde, hasta,
                         ruta.getNombreRuta(), peso,
                         ruta.getHoraInicio(), ruta.getHoraFin());

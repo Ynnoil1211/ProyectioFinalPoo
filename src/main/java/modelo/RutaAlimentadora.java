@@ -14,8 +14,7 @@ public class RutaAlimentadora extends Ruta {
 
     private String barrioAsociado;
 
-    public RutaAlimentadora(String nombre, int inicio, int fin,
-                            ArrayList<String> paradas, String barrio) {
+    public RutaAlimentadora(String nombre, int inicio, int fin, ArrayList<String> paradas, String barrio) {
         super(nombre, inicio, fin, paradas);
         this.barrioAsociado = barrio;
     }

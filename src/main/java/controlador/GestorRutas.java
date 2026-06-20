@@ -14,6 +14,15 @@ import java.util.*;
  * Controlador central de rutas.
  * Gestiona el ArrayList<Ruta>, construye el grafo y delega la búsqueda de camino óptimo a la clase AlgoritmoDijkstra.
  */
+
+/**
+ * JUSTIFICACION DE NO EXTENDER SERIALIZABLE:
+ * Dado que los datos se manejan desde un archivo de texto plano (.txt), decidimos manejar la lectura y salida de
+ *  datos mediante clases estándar de entrada/salida de texto de Java (PrintWriter, FileWriter, BufferedReader, FileReader)
+ *  para escribir esas líneas resultantes en los archivos .txt, o para leerlas y reconstruir los objetos separando las cadenas con .split(";").
+ * Esto, con el fin de manejar la Legibilidad y Depuración: Si hay un error en los datos de los usuarios o las tarjetas,
+ *  pueden abrir usuarios.txt y ver o editar los datos directamente con cualquier editor de texto.
+ */
 public class GestorRutas {
 
     private ArrayList<Ruta> rutas;
@@ -52,6 +61,7 @@ public class GestorRutas {
         this.rutas = new ArrayList<>();
         this.grafo = new GrafoRutas();
         this.algoritmo = new AlgoritmoDijkstra();
+        cargarDesdeArchivo();
     }
 
     // A continuacion, la implementacion para buscar la ruta mas optima usando grafo + AlgortimoDijkstra.
@@ -90,11 +100,11 @@ public class GestorRutas {
         sb.append("─────────────────────────────\n");
 
         for (int i = 0; i < camino.size() - 1; i++) {
-            String desde = camino.get(i);
-            String hasta = camino.get(i + 1);
-            NodoEstacion nodo = grafo.getNodo(desde);
+            String desde = camino.get(i); // El indice actual representa a la posicion actual
+            String hasta = camino.get(i + 1); // La posicion i+1 indica la estacion contigua a la actual.
+            NodoEstacion nodo = this.grafo.getNodo(desde); // Traduce el string crudo a un NodoEstacion mediante el metodo getNodo del grafo
             if (nodo == null) continue;
-            for (AristaRuta arista : nodo.getConexiones()) {
+            for (AristaRuta arista : nodo.getConexiones()) {  //obtiene la lista de todas las posibles conexiones del NodoEstacion
                 if (arista.getDestino().equalsIgnoreCase(hasta) && arista.estaDisponible(hora)) {
                     sb.append("Tramo ").append(i + 1).append(": ")
                             .append(desde).append(" -> ").append(hasta)
@@ -116,54 +126,74 @@ public class GestorRutas {
                 + " y continue en transporte alterno.";
     }
 
-    // ── CRUD sobre rutas.txt ────────────────────────────────────────────────
-
+    // CRUD sobre rutas.txt:
     public void cargarDesdeArchivo() {
         rutas.clear();
         File f = new File(ARCHIVO_RUTAS);
-        if (!f.exists()) { cargarEjemplos(); guardarEnArchivo(); return; }
-        try (BufferedReader br = new BufferedReader(new FileReader(f))) {
-            String linea;
-            while ((linea = br.readLine()) != null) {
-                linea = linea.trim();
-                if (linea.isEmpty() || linea.startsWith("#")) continue;
-                String[] p = linea.split(";");
-                if (p.length < 5) continue;
-                String tipo = p[0].trim();
-                String nom  = p[1].trim();
-                int    hi   = Integer.parseInt(p[2].trim());
-                int    hf   = Integer.parseInt(p[3].trim());
-                ArrayList<String> paradas = new ArrayList<>();
-                for (String s : p[4].split(",")) paradas.add(s.trim());
-                if ("Troncal".equalsIgnoreCase(tipo)) {
-                    rutas.add(new RutaTroncal(nom, hi, hf, paradas));
-                } else if ("Alimentadora".equalsIgnoreCase(tipo) && p.length >= 6) {
-                    rutas.add(new RutaAlimentadora(nom, hi, hf, paradas, p[5].trim()));
+        try {
+            if (!f.exists()) {
+                throw new IOException("El archivo de rutas no existe."); //Lanzamos IOException en caso de fallo en carga de archivo.
+            }
+            try (BufferedReader br = new BufferedReader(new FileReader(f))) {  // Aqui usamos un Try-With-Resources para cerrar automaticamente el archivo.
+                String linea;
+                while ((linea = br.readLine()) != null) {
+                    linea = linea.trim(); // Eliminamos espacio en blanco
+                    if (linea.isEmpty() || linea.startsWith("#")) continue;  // Ignoramos lineas vacias y '#' que indica un comentario
+                    String[] p = linea.split(";");
+                    if (p.length < 5) continue;   // El parsing se hace usando ';' como separador, en caso de ser menor que 5, se asume que hubo error y se descarta.
+                    String tipo = p[0].trim();  // Troncal || Alimentadora
+                    String nom  = p[1].trim();  // Codigo (A101...)
+                    int hi = Integer.parseInt(p[2].trim());  //Hora Inicio
+                    int hf = Integer.parseInt(p[3].trim());  // Hora Final
+                    ArrayList<String> paradas = new ArrayList<>();
+                    for (String parada : p[4].split(",")) paradas.add(parada.trim());  // Paradas divididas por ','.
+                    if ("Troncal".equalsIgnoreCase(tipo)) {
+                        rutas.add(new RutaTroncal(nom, hi, hf, paradas));   // Procesar ruta Troncal.
+                    } else if ("Alimentadora".equalsIgnoreCase(tipo) && p.length >= 6) {   // el sexto elemento es el barrio
+                        rutas.add(new RutaAlimentadora(nom, hi, hf, paradas, p[5].trim()));  // Procesar Ruta Alimentadora, p[5] es el barrio por el que circula la ruta
+                    }
                 }
             }
         } catch (IOException | NumberFormatException e) {
             System.err.println("Error cargando rutas: " + e.getMessage());
-            cargarEjemplos();
         }
         reconstruirGrafo();
     }
 
+    //proceso inverso para guardar datos.
     public void guardarEnArchivo() {
-        new File("data").mkdirs();
+        new File("data").mkdirs();  //mkdirs() crea la carpeta "data" en caso de que no exista
+        // Try with resource para cierre automatico, y FileWriter(ruta, false) para sobreescritura forzosa
         try (PrintWriter pw = new PrintWriter(new FileWriter(ARCHIVO_RUTAS, false))) {
-            pw.println("# rutas.txt | Formato: Tipo;Nombre;HInicio;HFin;Paradas[;Barrio]");
-            for (Ruta r : rutas) pw.println(r.toCSV());
+            pw.println("# rutas.txt | Formato: Tipo;Nombre;HInicio;HFin;Paradas[;Barrio]"); // La primera linea
+            for (Ruta r : rutas)
+                pw.println(r.toCSV());  // Polimorfismo
+                // Ejemplo de salida esperada: Troncal;T01;5;23;Portal,Pradera,Centro
         } catch (IOException e) {
             System.err.println("Error guardando rutas: " + e.getMessage());
         }
     }
 
-    public void agregarRuta(Ruta r)  { rutas.add(r); reconstruirGrafo(); guardarEnArchivo(); }
+    public void agregarRuta(Ruta r)  {
+        rutas.add(r);
+        reconstruirGrafo();  // Reconstruimos el grafo para actualizar datos
+        guardarEnArchivo();
+    }
 
     public boolean eliminarRuta(String nombre) {
-        boolean ok = rutas.removeIf(r -> r.getNombreRuta().equalsIgnoreCase(nombre));
-        if (ok) { reconstruirGrafo(); guardarEnArchivo(); }
-        return ok;
+        boolean found = false;
+        for (Ruta r : rutas) {
+            if (r.getNombreRuta().equalsIgnoreCase(nombre)) {
+                found = true;
+                rutas.remove(r);
+                break;             // Detenemos el ciclo de inmediato
+            }
+        }
+        if (found) { // Hacemos el update de inmediato
+            reconstruirGrafo();
+            guardarEnArchivo();
+        }
+        return found;
     }
 
     public void actualizarRuta(String nombre, Ruta nueva) {
@@ -175,38 +205,6 @@ public class GestorRutas {
         grafo.construirDesdeRutas(rutas);
     }
 
-    // ── Datos de ejemplo ────────────────────────────────────────────────────
-
-    private void cargarEjemplos() {
-        ArrayList<String> p1 = new ArrayList<>(List.of(
-                "Portal","Ejecutivos","Las Delicias","Chambacú","Bodeguita"));
-        rutas.add(new RutaTroncal("T101", 5, 21, p1));
-
-        ArrayList<String> p2 = new ArrayList<>(List.of(
-                "Portal","Bocagrande","Las Delicias","Bodeguita"));
-        rutas.add(new RutaTroncal("T102", 5, 21, p2));
-
-        ArrayList<String> p3 = new ArrayList<>(List.of(
-                "Portal","Ejecutivos","Chambacú","Crespo"));
-        rutas.add(new RutaTroncal("T103", 5, 21, p3));
-
-        ArrayList<String> a1 = new ArrayList<>(List.of(
-                "Chambacú","Manga","Pie de la Popa"));
-        rutas.add(new RutaAlimentadora("A103", 5, 20, a1, "Manga"));
-
-        ArrayList<String> a2 = new ArrayList<>(List.of(
-                "Chambacú","Crespo","Marbella"));
-        rutas.add(new RutaAlimentadora("A205", 5, 20, a2, "Crespo"));
-
-        ArrayList<String> a3 = new ArrayList<>(List.of(
-                "Las Delicias","Olaya","Nelson Mandela"));
-        rutas.add(new RutaAlimentadora("A310", 5, 19, a3, "Olaya"));
-
-        reconstruirGrafo();
-    }
-
-    // ── Getters ─────────────────────────────────────────────────────────────
-
     public ArrayList<Ruta> getRutas()   { return rutas; }
-    public GrafoRutas      getGrafo()   { return grafo; }
+    public GrafoRutas getGrafo()   { return grafo; }
 }

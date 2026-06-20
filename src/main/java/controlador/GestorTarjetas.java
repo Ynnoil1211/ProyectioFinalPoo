@@ -16,6 +16,15 @@ import java.util.*;
  *
  * SOLID-SRP: solo conoce lógica de tarjetas y persistencia en tarjetas.txt.
  */
+
+/**
+ * JUSTIFICACION DE NO EXTENDER SERIALIZABLE:
+ * Dado que los datos se manejan desde un archivo de texto plano (.txt), decidimos manejar la lectura y salida de
+ *  datos mediante clases estándar de entrada/salida de texto de Java (PrintWriter, FileWriter, BufferedReader, FileReader)
+ *  para escribir esas líneas resultantes en los archivos .txt, o para leerlas y reconstruir los objetos separando las cadenas con .split(";").
+ * Esto, con el fin de manejar la Legibilidad y Depuración: Si hay un error en los datos de los usuarios o las tarjetas,
+ *  pueden abrir usuarios.txt y ver o editar los datos directamente con cualquier editor de texto.
+ */
 public class GestorTarjetas {
 
     private ArrayList<TarjetaUsuario> tarjetas;
@@ -23,6 +32,7 @@ public class GestorTarjetas {
 
     public GestorTarjetas() {
         this.tarjetas = new ArrayList<>();
+        cargarDesdeArchivo();
     }
 
     // ── Búsqueda ────────────────────────────────────────────────────────────
