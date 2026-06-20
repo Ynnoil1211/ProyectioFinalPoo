@@ -1,6 +1,11 @@
 # rutas.txt | Formato: Tipo;Nombre;HInicio;HFin;Paradas[;Barrio]
-Troncal;T101;5;21;Portal,Ejecutivos,Las Delicias,Chambacú,Bodeguita
-Troncal;T102;5;21;Portal,Bocagrande,Las Delicias,Bodeguita
-Troncal;T103;5;21;Portal,Ejecutivos,Chambacú,Crespo
-Alimentadora;A103;5;20;Chambacú,Manga,Pie de la Popa;Manga
-Alimentadora;A205;5;20;Chambacú,Crespo,Marbella;Crespo
+Troncal;T101;5;22;Patio Portal,Madre Bernarda,Castellana,Ejecutivos,Cuatro Vientos,Bazurto,Las Delicias,Chambacú,Centro,Bodeguita;Pie de la Popa
+Troncal;T102;5;21;Patio Portal,Castellana,Ejecutivos,Bazurto,Chambacú,Marbella,Cabrero,Crespo;Crespo
+Troncal;T103;5;21;Patio Portal,Castellana,Ejecutivos,Bazurto,Bodeguita,Bocagrande;Bocagrande
+Troncal;X102;5;21;Patio Portal,Ceballos,Alto Bosque,El Bosque,Bazurto,Centro;El Bosque
+Troncal;X103;5;21;Patio Portal,Zaragocilla,Los Alpes,Consulado,Bazurto,Centro;Zaragocilla
+Troncal;X104;5;21;Patio Portal,Las Palmeras,Olaya,El Libano,Cuatro Vientos,Centro;Olaya
+Troncal;X105;5;21;Ciudadela 2000,Crisanto Luque,Manga,Centro,Bocagrande;Manga
+Alimentadora;A104;5;22;Patio Portal,Nelson Mandela,San Fernando;San Fernando
+Alimentadora;A107;5;22;Castellana,Blas de Lezo,Los Caracoles;Blas de Lezo
+Alimentadora;A108;5;22;Castellana,El Campestre,Vista Hermosa,Blas de Lezo;Blas de Lezo
