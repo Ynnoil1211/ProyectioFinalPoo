@@ -47,8 +47,8 @@ public class Administrador {
      * Serializa el administrador a CSV para usuarios.txt
      */
     public String toCSV() {
-        // Formato: ID;Nombre;Password;ADMIN
-        return id + ";" + nombre + ";" + password + ";ADMIN";
+        // Formato: ID;Nombre;Password
+        return id + ";" + nombre + ";" + password;
     }
 
     @Override

@@ -41,11 +41,11 @@ public class GestorTarjetas {
      * Busca una tarjeta por número.
      * @throws TarjetaNoEncontradaException si no existe
      */
-    public TarjetaUsuario buscarPorNumero(String numero) throws TarjetaNoEncontradaException {
+    public TarjetaUsuario buscarPorNumero(String numero) throws TarjetaNoEncontradaException  {
         for (TarjetaUsuario t : tarjetas) {
             if (t.getNumeroTarjeta().equalsIgnoreCase(numero)) return t;
         }
-        throw new TarjetaNoEncontradaException(numero);
+        throw new TarjetaNoEncontradaException("El número de tarjeta " + numero + " no existe en el sistema.");
     }
 
     // ── CRUD :
@@ -64,9 +64,6 @@ public class GestorTarjetas {
     // UPDATE — recarga saldo de una tarjeta existente
     public void recargarTarjeta(String idTarjeta, double monto) throws TarjetaNoEncontradaException {
         TarjetaUsuario tarjeta = buscarPorNumero(idTarjeta);
-        if (tarjeta == null) {
-            throw new TarjetaNoEncontradaException("El número de tarjeta " + idTarjeta + " no existe en el sistema.");
-        }
         // llamar al metodo para recargar
         tarjeta.recargar(monto);
         guardarEnArchivo();

@@ -89,8 +89,12 @@ public class GestorRutas {
     }
 
     /**
-     * Dado un camino de IDs, devuelve instrucciones legibles para cada tramo
-     * Recorre el camino y busca qué ruta cubre cada par consecutivo
+     * Dado un camino de IDs, devuelve instrucciones legibles para cada tramo.
+     *
+     * REGLA DE TARIFA INTEGRADA:
+     * Se puede transbordar entre troncales libremente.
+     * Se permite un (1) transbordo a ruta alimentadora.
+     * Si se toma una segunda ruta alimentadora, implica salir del sistema y volver a pagar.
      */
     public String generarInstrucciones(List<String> camino, int hora) {
         if (camino.size() < 2) return "Ya se encuentra en el destino.";
@@ -99,25 +103,62 @@ public class GestorRutas {
         sb.append("Recorrido: ").append(String.join(" -> ", camino)).append("\n");
         sb.append("─────────────────────────────\n");
 
+        String rutaAnterior = null;
+        int contadorAlimentadoras = 0;
+        int tarifasACobrar = 1; // Base: siempre se cobra 1 pasaje al entrar
+
         for (int i = 0; i < camino.size() - 1; i++) {
-            String desde = camino.get(i); // El indice actual representa a la posicion actual
-            String hasta = camino.get(i + 1); // La posicion i+1 indica la estacion contigua a la actual.
-            NodoEstacion nodo = this.grafo.getNodo(desde); // Traduce el string crudo a un NodoEstacion mediante el metodo getNodo del grafo
+            String desde = camino.get(i);
+            String hasta = camino.get(i + 1);
+            NodoEstacion nodo = this.grafo.getNodo(desde);
+
             if (nodo == null) continue;
-            for (AristaRuta arista : nodo.getConexiones()) {  //obtiene la lista de todas las posibles conexiones del NodoEstacion
+
+            for (AristaRuta arista : nodo.getConexiones()) {
                 if (arista.getDestino().equalsIgnoreCase(hasta) && arista.estaDisponible(hora)) {
+                    String nombreRutaActual = arista.getNombreRuta();
+                    boolean esAlimentadora = nombreRutaActual.toUpperCase().startsWith("A"); // Asumiendo que las alimentadoras empiezan con 'A'
+                    boolean esTransbordo = rutaAnterior != null && !rutaAnterior.equalsIgnoreCase(nombreRutaActual);
+
                     sb.append("Tramo ").append(i + 1).append(": ")
                             .append(desde).append(" -> ").append(hasta)
-                            .append(" | Ruta ").append(arista.getNombreRuta())
+                            .append(" | Ruta ").append(nombreRutaActual)
                             .append(" (~").append(arista.getPesoMinutos())
-                            .append(" min)\n");
-                    break;
+                            .append(" min)");
+
+                    if (esTransbordo) {
+                        if (esAlimentadora) {
+                            contadorAlimentadoras++;
+                            if (contadorAlimentadoras > 1) {
+                                sb.append("  [¡Atención! 2da Alimentadora: requiere nuevo pago]");
+                                tarifasACobrar++;
+                            } else {
+                                sb.append("  [Transbordo a Alimentadora integrado]");
+                            }
+                        } else {
+                            // Transbordo hacia troncal (asumiendo que viene de otra troncal o es el inicio)
+                            sb.append("  [Transbordo Troncal sin costo]");
+                        }
+                    }
+                    sb.append("\n");
+
+                    rutaAnterior = nombreRutaActual;
+                    break; // Pasa al siguiente tramo del camino
                 }
             }
         }
-        sb.append("Tarifa total: $").append(String.format("%.0f", (camino.size() - 1) * 3900.0));
+
+        double totalAPagar = tarifasACobrar * modelo.TarjetaUsuario.TARIFA;
+        sb.append("─────────────────────────────\n");
+        sb.append("Tarifa total estimada: $").append(String.format("%.0f", totalAPagar));
+
+        if (tarifasACobrar > 1) {
+            sb.append("\nNota: El viaje requiere salir de la estación, por lo que se cobra pasaje adicional.");
+        }
+
         return sb.toString();
     }
+
 
     public String generarContingencia(String destino) {
         String plan = CONTINGENCIA.getOrDefault(destino.toLowerCase(), "la estacion troncal mas cercana");

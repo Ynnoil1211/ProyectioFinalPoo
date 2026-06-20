@@ -77,7 +77,11 @@ public class GrafoRutas {
     public boolean existeNodo(String id) {
         return nodos.containsKey(id.toUpperCase());
     }
-
+    public List<String> obtenerIdsEstacionesOrdenados() {
+        List<String> ids = new ArrayList<>(nodos.keySet());
+        Collections.sort(ids);
+        return ids;
+    }
     public int getTotalNodos() {
         return nodos.size();
     }

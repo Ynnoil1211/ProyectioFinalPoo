@@ -1,6 +1,6 @@
 package vista;
 
-// Integrantes: [Nombre 1] - [Nombre 2]
+// Integrantes: Lionny Lin - 0222510050 & Samuel Campo - 0222510057
 // Universidad de Cartagena - POO 2026-1
 
 import modelo.*;
@@ -12,16 +12,15 @@ import java.awt.*;
 import java.util.ArrayList;
 
 /**
- * Página 3b — Panel de administrador.
+ * Panel de administracion. Solo accesible tras login exitoso en
+ * PanelLoginAdmin (GestorAdmins.iniciarSesion).
  *
- * Pestana 1: CRUD de Rutas (rutas.txt)
- * Pestana 2: CRUD de Tarjetas (tarjetas.txt)
- *
- * Solo accesible tras login con rol ADMIN.
+ * Pestana 1: CRUD de Rutas    -> GestorRutas (agregarRuta, eliminarRuta)
+ * Pestana 2: CRUD de Tarjetas -> GestorTarjetas (crearTarjeta, eliminarTarjeta)
  */
 public class PanelAdmin extends JPanel {
 
-    private final KioscoApp app;
+    private final StandApp app;
 
     // ── Tab Rutas ────────────────────────────────────────────────────────────
     private JTable            tablaRutas;
@@ -34,23 +33,22 @@ public class PanelAdmin extends JPanel {
     private DefaultTableModel modeloTarjetas;
     private JTextField        txtNumTarjeta, txtTitular, txtSaldoInicial;
 
-    public PanelAdmin(KioscoApp app) {
+    public PanelAdmin(StandApp app) {
         this.app = app;
-        setBackground(KioscoApp.COL_FONDO);
+        setBackground(StandApp.COL_FONDO);
         setLayout(new BorderLayout(10, 10));
         setBorder(new EmptyBorder(10, 14, 10, 14));
 
-        // Banner de bienvenida
-        Administrador admin = (Administrador) app.getGestorUsuarios().getSesion();
-        JLabel lblAdm = new JLabel("Panel de administrador — "
-                + admin.getNombre() + " (" + admin.getDependencia() + ")");
-        lblAdm.setFont(KioscoApp.F_TITULO);
-        lblAdm.setForeground(KioscoApp.COL_PRIMARIO);
+        Administrador admin = app.getGestorAdmins().haySesion();
+        JLabel lblAdm = new JLabel("Panel de administracion — "
+                + (admin != null ? admin.getNombre() : ""));
+        lblAdm.setFont(StandApp.F_TITULO);
+        lblAdm.setForeground(StandApp.COL_PRIMARIO);
         lblAdm.setBorder(new EmptyBorder(4, 0, 8, 0));
         add(lblAdm, BorderLayout.NORTH);
 
         JTabbedPane tabs = new JTabbedPane();
-        tabs.setFont(KioscoApp.F_NORMAL);
+        tabs.setFont(StandApp.F_NORMAL);
         tabs.addTab("  Gestion de Rutas  ",    crearTabRutas());
         tabs.addTab("  Gestion de Tarjetas  ", crearTabTarjetas());
         add(tabs, BorderLayout.CENTER);
@@ -62,61 +60,58 @@ public class PanelAdmin extends JPanel {
 
     private JPanel crearTabRutas() {
         JPanel p = new JPanel(new BorderLayout(8, 8));
-        p.setBackground(KioscoApp.COL_FONDO);
+        p.setBackground(StandApp.COL_FONDO);
         p.setBorder(new EmptyBorder(10, 8, 10, 8));
 
-        // ── Tabla ──────────────────────────────────────────────────────────
         modeloRutas = new DefaultTableModel(
                 new String[]{"Tipo","Nombre","H.Ini","H.Fin","Paradas"}, 0) {
             @Override public boolean isCellEditable(int r, int c) { return false; }
         };
         tablaRutas = new JTable(modeloRutas);
-        tablaRutas.setFont(KioscoApp.F_NORMAL);
+        tablaRutas.setFont(StandApp.F_NORMAL);
         tablaRutas.setRowHeight(24);
-        tablaRutas.getTableHeader().setFont(KioscoApp.F_TITULO);
+        tablaRutas.getTableHeader().setFont(StandApp.F_TITULO);
         recargarTablaRutas();
 
         JScrollPane scroll = new JScrollPane(tablaRutas);
         scroll.setBorder(BorderFactory.createTitledBorder(
                 BorderFactory.createLineBorder(new Color(200, 210, 230)),
                 "Rutas registradas (rutas.txt)",
-                TitledBorder.LEFT, TitledBorder.TOP, KioscoApp.F_TITULO));
+                TitledBorder.LEFT, TitledBorder.TOP, StandApp.F_TITULO));
         p.add(scroll, BorderLayout.CENTER);
 
-        // ── Formulario agregar ─────────────────────────────────────────────
         JPanel form = new JPanel(new GridBagLayout());
         form.setBackground(Color.WHITE);
         form.setBorder(BorderFactory.createTitledBorder(
                 BorderFactory.createLineBorder(new Color(200, 210, 230)),
-                "Agregar / Editar ruta",
-                TitledBorder.LEFT, TitledBorder.TOP, KioscoApp.F_TITULO));
+                "Agregar ruta", TitledBorder.LEFT, TitledBorder.TOP, StandApp.F_TITULO));
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(4, 6, 4, 6);
         gbc.fill   = GridBagConstraints.HORIZONTAL;
 
-        cboTipo   = new JComboBox<>(new String[]{"Troncal","Alimentadora"});
-        txtNombre = new JTextField(7);
-        txtHi     = new JTextField(4);
-        txtHf     = new JTextField(4);
+        cboTipo    = new JComboBox<>(new String[]{"Troncal","Alimentadora"});
+        txtNombre  = new JTextField(7);
+        txtHi      = new JTextField(4);
+        txtHf      = new JTextField(4);
         txtParadas = new JTextField(22);
         txtBarrio  = new JTextField(12);
 
         for (JComponent c : new JComponent[]{cboTipo, txtNombre,
-                txtHi, txtHf, txtParadas, txtBarrio}) c.setFont(KioscoApp.F_NORMAL);
+                txtHi, txtHf, txtParadas, txtBarrio}) c.setFont(StandApp.F_NORMAL);
 
         Object[][] cols = {
                 {"Tipo:", cboTipo, "Nombre:", txtNombre},
                 {"H.inicio:", txtHi, "H.fin:", txtHf},
-                {"Paradas (coma):", txtParadas, "Barrio:", txtBarrio}
+                {"Paradas (coma):", txtParadas, "Barrio (si Alimentadora):", txtBarrio}
         };
         for (int f = 0; f < cols.length; f++) {
             for (int c = 0; c < 4; c++) {
                 gbc.gridx = c; gbc.gridy = f;
-                gbc.weightx = (c % 2 == 0) ? 0.1 : 0.4;
+                gbc.weightx = (c % 2 == 0) ? 0.15 : 0.35;
                 if (c % 2 == 0) {
                     JLabel l = new JLabel((String) cols[f][c]);
-                    l.setFont(KioscoApp.F_NORMAL);
+                    l.setFont(StandApp.F_NORMAL);
                     form.add(l, gbc);
                 } else {
                     form.add((JComponent) cols[f][c], gbc);
@@ -124,8 +119,8 @@ public class PanelAdmin extends JPanel {
             }
         }
 
-        JButton btnGuardar  = boton("Guardar ruta",   KioscoApp.COL_PRIMARIO, e -> guardarRuta());
-        JButton btnEliminar = boton("Eliminar ruta",  new Color(190, 50, 50),  e -> eliminarRuta());
+        JButton btnGuardar  = boton("Agregar ruta",  StandApp.COL_PRIMARIO,   e -> guardarRuta());
+        JButton btnEliminar = boton("Eliminar ruta", new Color(190, 50, 50),  e -> eliminarRuta());
 
         JPanel btns = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
         btns.setBackground(Color.WHITE);
@@ -150,6 +145,7 @@ public class PanelAdmin extends JPanel {
         }
     }
 
+    /** Crea RutaTroncal o RutaAlimentadora y la pasa a GestorRutas.agregarRuta(). */
     private void guardarRuta() {
         try {
             String tipo   = (String) cboTipo.getSelectedItem();
@@ -157,8 +153,9 @@ public class PanelAdmin extends JPanel {
             int    hi     = Integer.parseInt(txtHi.getText().trim());
             int    hf     = Integer.parseInt(txtHf.getText().trim());
             String barrio = txtBarrio.getText().trim();
+
             if (nombre.isEmpty() || txtParadas.getText().trim().isEmpty()) {
-                JOptionPane.showMessageDialog(app, "Nombre y paradas son obligatorios.");
+                JOptionPane.showMessageDialog(this, "Nombre y paradas son obligatorios.");
                 return;
             }
             ArrayList<String> paradas = new ArrayList<>();
@@ -169,21 +166,22 @@ public class PanelAdmin extends JPanel {
                     : new RutaAlimentadora(nombre, hi, hf, paradas,
                     barrio.isEmpty() ? "Sin barrio" : barrio);
 
-            app.getGestorRutas().agregarRuta(nueva);
+            app.getGestorRutas().agregarRuta(nueva);   // reconstruye grafo y guarda
             recargarTablaRutas();
-            JOptionPane.showMessageDialog(app, "Ruta guardada en rutas.txt");
+            JOptionPane.showMessageDialog(this, "Ruta guardada en rutas.txt");
+
             txtNombre.setText(""); txtHi.setText(""); txtHf.setText("");
             txtParadas.setText(""); txtBarrio.setText("");
         } catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(app, "Horas deben ser enteros (ej: 5, 20).");
+            JOptionPane.showMessageDialog(this, "Las horas deben ser enteros (ej: 5, 21).");
         }
     }
 
     private void eliminarRuta() {
         int fila = tablaRutas.getSelectedRow();
-        if (fila < 0) { JOptionPane.showMessageDialog(app, "Selecciona una ruta."); return; }
+        if (fila < 0) { JOptionPane.showMessageDialog(this, "Selecciona una ruta."); return; }
         String nombre = (String) modeloRutas.getValueAt(fila, 1);
-        int ok = JOptionPane.showConfirmDialog(app,
+        int ok = JOptionPane.showConfirmDialog(this,
                 "Eliminar la ruta " + nombre + "?", "Confirmar", JOptionPane.YES_NO_OPTION);
         if (ok == JOptionPane.YES_OPTION) {
             app.getGestorRutas().eliminarRuta(nombre);
@@ -197,34 +195,32 @@ public class PanelAdmin extends JPanel {
 
     private JPanel crearTabTarjetas() {
         JPanel p = new JPanel(new BorderLayout(8, 8));
-        p.setBackground(KioscoApp.COL_FONDO);
+        p.setBackground(StandApp.COL_FONDO);
         p.setBorder(new EmptyBorder(10, 8, 10, 8));
 
-        // ── Tabla ──────────────────────────────────────────────────────────
         modeloTarjetas = new DefaultTableModel(
                 new String[]{"Numero","Titular","Saldo"}, 0) {
             @Override public boolean isCellEditable(int r, int c) { return false; }
         };
         tablaTarjetas = new JTable(modeloTarjetas);
-        tablaTarjetas.setFont(KioscoApp.F_NORMAL);
+        tablaTarjetas.setFont(StandApp.F_NORMAL);
         tablaTarjetas.setRowHeight(24);
-        tablaTarjetas.getTableHeader().setFont(KioscoApp.F_TITULO);
+        tablaTarjetas.getTableHeader().setFont(StandApp.F_TITULO);
         recargarTablaTarjetas();
 
         JScrollPane scroll = new JScrollPane(tablaTarjetas);
         scroll.setBorder(BorderFactory.createTitledBorder(
                 BorderFactory.createLineBorder(new Color(200, 210, 230)),
                 "Tarjetas registradas (tarjetas.txt)",
-                TitledBorder.LEFT, TitledBorder.TOP, KioscoApp.F_TITULO));
+                TitledBorder.LEFT, TitledBorder.TOP, StandApp.F_TITULO));
         p.add(scroll, BorderLayout.CENTER);
 
-        // ── Formulario crear tarjeta ───────────────────────────────────────
         JPanel form = new JPanel(new GridBagLayout());
         form.setBackground(Color.WHITE);
         form.setBorder(BorderFactory.createTitledBorder(
                 BorderFactory.createLineBorder(new Color(200, 210, 230)),
                 "Crear / Eliminar tarjeta",
-                TitledBorder.LEFT, TitledBorder.TOP, KioscoApp.F_TITULO));
+                TitledBorder.LEFT, TitledBorder.TOP, StandApp.F_TITULO));
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 6, 5, 6);
@@ -233,30 +229,26 @@ public class PanelAdmin extends JPanel {
         txtNumTarjeta   = new JTextField(10);
         txtTitular      = new JTextField(14);
         txtSaldoInicial = new JTextField(8);
-
         for (JComponent c : new JComponent[]{txtNumTarjeta, txtTitular, txtSaldoInicial})
-            c.setFont(KioscoApp.F_NORMAL);
+            c.setFont(StandApp.F_NORMAL);
 
-        Object[][] cols = {
-                {"Numero:", txtNumTarjeta, "Titular:", txtTitular, "Saldo ini:", txtSaldoInicial}
-        };
         String[] labels = {"Numero:","Titular:","Saldo ini:"};
         JComponent[] fields = {txtNumTarjeta, txtTitular, txtSaldoInicial};
         for (int i = 0; i < labels.length; i++) {
             JLabel l = new JLabel(labels[i]);
-            l.setFont(KioscoApp.F_NORMAL);
+            l.setFont(StandApp.F_NORMAL);
             gbc.gridx = i * 2; gbc.gridy = 0; gbc.weightx = 0.1;
             form.add(l, gbc);
             gbc.gridx = i * 2 + 1; gbc.weightx = 0.3;
             form.add(fields[i], gbc);
         }
 
-        JButton btnCrear   = boton("Crear tarjeta",   KioscoApp.COL_PRIMARIO, e -> crearTarjeta());
-        JButton btnElimTar = boton("Eliminar tarjeta", new Color(190, 50, 50), e -> eliminarTarjeta());
+        JButton btnCrear   = boton("Crear tarjeta",   StandApp.COL_PRIMARIO,  e -> crearTarjeta());
+        JButton btnEliminar= boton("Eliminar tarjeta", new Color(190, 50, 50), e -> eliminarTarjeta());
 
         JPanel btns = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 0));
         btns.setBackground(Color.WHITE);
-        btns.add(btnCrear); btns.add(btnElimTar);
+        btns.add(btnCrear); btns.add(btnEliminar);
 
         gbc.gridx = 0; gbc.gridy = 1; gbc.gridwidth = 6;
         gbc.insets = new Insets(10, 6, 6, 6);
@@ -276,30 +268,29 @@ public class PanelAdmin extends JPanel {
     }
 
     private void crearTarjeta() {
-        String num     = txtNumTarjeta.getText().trim();
-        String titular = txtTitular.getText().trim();
-        String saldoStr = txtSaldoInicial.getText().trim();
+        String num      = txtNumTarjeta.getText().trim();
+        String titular   = txtTitular.getText().trim();
+        String saldoStr  = txtSaldoInicial.getText().trim();
         if (num.isEmpty() || titular.isEmpty()) {
-            JOptionPane.showMessageDialog(app, "Numero y titular son obligatorios.");
+            JOptionPane.showMessageDialog(this, "Numero y titular son obligatorios.");
             return;
         }
         try {
             double saldo = saldoStr.isEmpty() ? 0 : Double.parseDouble(saldoStr);
-            app.getGestorTarjetas().crearTarjeta(
-                    new TarjetaUsuario(num, titular, saldo));
+            app.getGestorTarjetas().crearTarjeta(new TarjetaUsuario(num, titular, saldo));
             recargarTablaTarjetas();
-            JOptionPane.showMessageDialog(app, "Tarjeta creada y guardada.");
+            JOptionPane.showMessageDialog(this, "Tarjeta creada y guardada.");
             txtNumTarjeta.setText(""); txtTitular.setText(""); txtSaldoInicial.setText("");
         } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(app, "Saldo debe ser un numero.");
+            JOptionPane.showMessageDialog(this, "Saldo debe ser un numero.");
         }
     }
 
     private void eliminarTarjeta() {
         int fila = tablaTarjetas.getSelectedRow();
-        if (fila < 0) { JOptionPane.showMessageDialog(app, "Selecciona una tarjeta."); return; }
+        if (fila < 0) { JOptionPane.showMessageDialog(this, "Selecciona una tarjeta."); return; }
         String num = (String) modeloTarjetas.getValueAt(fila, 0);
-        int ok = JOptionPane.showConfirmDialog(app,
+        int ok = JOptionPane.showConfirmDialog(this,
                 "Eliminar tarjeta " + num + "?", "Confirmar", JOptionPane.YES_NO_OPTION);
         if (ok == JOptionPane.YES_OPTION) {
             app.getGestorTarjetas().eliminarTarjeta(num);
@@ -309,10 +300,9 @@ public class PanelAdmin extends JPanel {
 
     // ── Helper ───────────────────────────────────────────────────────────────
 
-    private JButton boton(String txt, Color bg,
-                          java.awt.event.ActionListener al) {
+    private JButton boton(String txt, Color bg, java.awt.event.ActionListener al) {
         JButton b = new JButton(txt);
-        b.setFont(KioscoApp.F_NORMAL);
+        b.setFont(StandApp.F_NORMAL);
         b.setBackground(bg);
         b.setForeground(Color.WHITE);
         b.setFocusPainted(false);
