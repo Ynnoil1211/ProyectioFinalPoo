@@ -33,14 +33,10 @@ public class GrafoRutas {
      * Conecta dos estaciones con una arista dirigida (tramo de ruta).
      * Se llama para cada par consecutivo de paradas de cada ruta.
      */
-    public void agregarArista(String origenId, String destinoId,
-                              String nombreRuta, int pesoMinutos,
-                              int horaInicio, int horaFin) {
+    public void agregarArista(String origenId, String destinoId, String nombreRuta, int pesoMinutos, int horaInicio, int horaFin) {
         NodoEstacion nodo = nodos.get(origenId.toUpperCase());
         if (nodo == null) return;
-        nodo.agregarConexion(new AristaRuta(
-                destinoId.toUpperCase(), nombreRuta,
-                pesoMinutos, horaInicio, horaFin));
+        nodo.agregarConexion(new AristaRuta(destinoId.toUpperCase(), nombreRuta, pesoMinutos, horaInicio, horaFin));
     }
 
     /**
@@ -59,39 +55,40 @@ public class GrafoRutas {
                 // Dado que nodos es un mapa, evitamos duplicado automaticamente
             }
             for (int i = 0; i < paradas.size() - 1; i++) {
-                String desde = paradas.get(i).toUpperCase();
-                String hasta = paradas.get(i + 1).toUpperCase();
+                String desde = paradas.get(i).toUpperCase(); // estacion actual
+                String hasta = paradas.get(i + 1).toUpperCase();  // estacion proxima
                 int peso = 6;  // minutos estimados por tramo
-                agregarArista(desde, hasta,
-                        ruta.getNombreRuta(), peso,
-                        ruta.getHoraInicio(), ruta.getHoraFin());
-                // Arista inversa (mismo tiempo, misma ruta)
-                agregarArista(hasta, desde,
-                        ruta.getNombreRuta(), peso,
-                        ruta.getHoraInicio(), ruta.getHoraFin());
+                // agregamos un nuevo tramo señalando las conexiones
+                agregarArista(desde, hasta, ruta.getNombreRuta(), peso, ruta.getHoraInicio(), ruta.getHoraFin());
+                // Arista inversa (mismo tiempo, misma ruta, pero en orden inverso)
+                agregarArista(hasta, desde, ruta.getNombreRuta(), peso, ruta.getHoraInicio(), ruta.getHoraFin());
             }
         }
     }
 
-    // ── Consultas ───────────────────────────────────────────────────────────
+    // ── Consultas:
 
     public NodoEstacion getNodo(String id) {
         return nodos.get(id.toUpperCase());
     }
-
     public Collection<NodoEstacion> getNodos() {
         return nodos.values();
     }
-
     public boolean existeNodo(String id) {
         return nodos.containsKey(id.toUpperCase());
     }
 
-    public int getTotalNodos()   { return nodos.size(); }
+    public int getTotalNodos() {
+        return nodos.size();
+    }
+    // Calculo de todas las conexiones
     public int getTotalAristas() {
-        return nodos.values().stream()
-                .mapToInt(n -> n.getConexiones().size())
-                .sum();
+        int total = 0;
+        for (NodoEstacion n : nodos.values()) {
+            // Sumamos el tamaño de la lista de conexiones de cada nodo
+            total += n.getConexiones().size();
+        }
+        return total;
     }
 
     @Override

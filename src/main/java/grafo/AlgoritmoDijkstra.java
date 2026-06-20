@@ -6,95 +6,99 @@ import java.util.*;
 
 /**
  * Algoritmo de Dijkstra para camino mínimo en el grafo de rutas.
- *
- * Encuentra el trayecto de menor tiempo entre dos estaciones,
- * considerando únicamente las aristas disponibles a la hora indicada.
- *
+ * Encuentra el trayecto de menor tiempo entre dos estaciones,considerando únicamente las aristas disponibles a la hora indicada.
  * Complejidad: O((V + E) log V) con cola de prioridad.
- *
- * SOLID-OCP : implementa IAlgoritmoRuta sin modificar ninguna otra clase.
- * SOLID-SRP : solo conoce el algoritmo de búsqueda.
  */
-public class AlgoritmoDijkstra{
-    public List<String> calcularRuta(GrafoRutas grafo, String origen,
-                                     String destino, int hora) {
-
-        String origenKey  = origen.toUpperCase();
+public class AlgoritmoDijkstra {
+    public List<String> calcularRuta(GrafoRutas grafo, String origen, String destino, int hora) {
+        String origenKey = origen.toUpperCase();
         String destinoKey = destino.toUpperCase();
 
-        // Verificar que los nodos existen
+        // Validar que los nodos existan
         if (!grafo.existeNodo(origenKey) || !grafo.existeNodo(destinoKey)) {
             return Collections.emptyList();
         }
 
-        // distancias[nodo] = menor tiempo acumulado desde origen
-        Map<String, Integer>  dist    = new HashMap<>();
-        // predecesor[nodo] = nodo desde el que llegamos con menor costo
-        Map<String, String>   previo  = new HashMap<>();
+        /**Creamos una clase interna auxiliar para la cola de prioridad,
+         * esto con el fin de agrupar cada nodo con el costo de llegar hasta él
+         */
+        class Par {
+            int costo;
+            String nodo;
 
-        // Cola de prioridad: (costo, idNodo)
-        PriorityQueue<int[]> cola = new PriorityQueue<>(
-                Comparator.comparingInt(a -> a[0]));
+            Par(int costo, String nodo) {
+                this.costo = costo;
+                this.nodo = nodo;
+            }
+        }
 
-        // Inicializar todas las distancias a infinito
+        Map<String, Integer> dist = new HashMap<>();  //Guarda el tiempo mínimo para llegar a cada estación. Al principio, todas se configuran con una distancia "infinita"
+        Map<String, String> previo = new HashMap<>(); //Guarda cuál fue la estación anterior para saber cómo se llegó allí
+
+        // Cola que ordena automáticamente los nodos sacando siempre el de menor costo
+        PriorityQueue<Par> cola = new PriorityQueue<>(Comparator.comparingInt(p -> p.costo));
+
+        // Inicializar todos los nodos con distancia "infinita"
         for (NodoEstacion n : grafo.getNodos()) {
             dist.put(n.getIdEstacion(), Integer.MAX_VALUE);
         }
-        dist.put(origenKey, 0);
-        cola.offer(new int[]{0, origenKey.hashCode()});
 
-        // Mapa auxiliar hashCode -> idEstacion (para recuperar el ID desde la cola)
-        Map<Integer, String> hashToId = new HashMap<>();
-        for (NodoEstacion n : grafo.getNodos()) {
-            hashToId.put(n.getIdEstacion().hashCode(), n.getIdEstacion());
-        }
+        dist.put(origenKey, 0); // Aqui sobreescribimos el costo de la estacion origen como 0
+        cola.offer(new Par(0, origenKey)); // Metemos la estacion origen en la cola, con un costo acumulado incial de 0 minutos
 
-        // ── Dijkstra ────────────────────────────────────────────────────────
+        // Bucle principal de Dijkstra
         while (!cola.isEmpty()) {
-            int[]  par        = cola.poll();
-            int    costoActual = par[0];
-            String idActual   = hashToId.get(par[1]);
+            Par actual = cola.poll(); //Saca de la cola el elemento que tenga el menor tiempo acumulado.
 
-            if (idActual == null) continue;
-            if (idActual.equals(destinoKey)) break;
-            if (costoActual > dist.getOrDefault(idActual, Integer.MAX_VALUE))
-                continue;  // entrada obsoleta
+            // Si ya llegamos al destino, no hace falta seguir buscando
+            if (actual.nodo.equals(destinoKey)) break;
 
-            NodoEstacion nodoActual = grafo.getNodo(idActual);
-            if (nodoActual == null) continue;
+            /**
+             * Filtramos caminos viejos u obsoletos. Debido a cómo funciona Dijkstra,
+             * una estación puede meterse a la cola varias veces con tiempos diferentes.
+             * Ejemplo:
+             * Si sacamos una estación con un costo de 20 minutos,
+             * pero en el mapa dist ya registramos antes un camino mejor de 12 minutos,
+             * esta línea ejecuta un continue para ignorar el camino lento y saltar al siguiente elemento de la cola.
+             * */
+            if (actual.costo > dist.get(actual.nodo)) continue;
 
-            for (AristaRuta arista : nodoActual.getConexiones()) {
-                // Solo considerar aristas disponibles a la hora actual
+            NodoEstacion nodoEstacion = grafo.getNodo(actual.nodo); //pasamos de string a NodoEstacion
+
+            for (AristaRuta arista : nodoEstacion.getConexiones()) {  //para cada una de las aristas
+
+                // Si el bus ya no pasa a esta hora, ignoramos este camino
                 if (!arista.estaDisponible(hora)) continue;
 
-                String  vecino    = arista.getDestino();
-                int     nuevoDist = costoActual + arista.getPesoMinutos();
-                int     distVec   = dist.getOrDefault(vecino, Integer.MAX_VALUE);
+                String vecino = arista.getDestino();
+                int nuevoCosto = actual.costo + arista.getPesoMinutos();
 
-                if (nuevoDist < distVec) {
-                    dist.put(vecino, nuevoDist);
-                    previo.put(vecino, idActual);
-                    cola.offer(new int[]{nuevoDist, vecino.hashCode()});
-                    hashToId.put(vecino.hashCode(), vecino);
+                /**
+                 * RELAJACION:
+                 * ¿El nuevo tiempo que calculamos es menor que el "infinito" o el minimo anterior guardado para esa estación vecina?
+                 * */
+                if (nuevoCosto < dist.get(vecino)) {
+                    dist.put(vecino, nuevoCosto);  // Actualiza el costo de esa estación vecina con el nuevo valor más bajo
+                    previo.put(vecino, actual.nodo); // Actualiza la relacion de rapidez para llegar al vecino
+                    // Finalmente, metemos al vecino en la cola con su nuevo tiempo minimo para que el algoritmo explore sus conexiones en los siguientes turnos del bucle
+                    cola.offer(new Par(nuevoCosto, vecino)); //
                 }
             }
         }
 
-        // ── Reconstruir camino ──────────────────────────────────────────────
+        // Reconstruir el camino desde el destino hacia el origen
         if (!previo.containsKey(destinoKey) && !origenKey.equals(destinoKey)) {
-            return Collections.emptyList();  // no hay camino
+            return Collections.emptyList(); // No se encontró conexión
         }
-
-        LinkedList<String> camino = new LinkedList<>();
-        String actual = destinoKey;
-        while (actual != null) {
-            camino.addFirst(actual);
-            actual = previo.get(actual);
-        }
-
-        // Verificar que el camino realmente arranca en el origen
-        if (!camino.getFirst().equals(origenKey)) {
-            return Collections.emptyList();
+        LinkedList<String> camino = new LinkedList<>();  // Por la rapidez en insercion
+        String paso = destinoKey;
+        while (paso != null) {
+            /**
+             *  Añade cada estación al inicio de la lista. Como estamos leyendo la ruta al revés (de destino a origen),
+             *  al empujar cada elemento al frente, la lista se voltea automáticamente
+             * */
+            camino.addFirst(paso);
+            paso = previo.get(paso);
         }
 
         return camino;

@@ -10,8 +10,8 @@ package grafo;
  */
 public class AristaRuta {
 
-    private String destino;       // ID de la estación destino
-    private String nombreRuta;    // ej: "T101", "A103"
+    private String destino;    // ID de la estación destino
+    private String nombreRuta; // ej: "T101", "A103"
     private int pesoMinutos;   // tiempo estimado del tramo
     private int horaInicio;
     private int horaFin;
