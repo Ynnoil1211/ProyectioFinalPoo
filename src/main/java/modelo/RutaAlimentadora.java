@@ -13,13 +13,13 @@ import java.util.ArrayList;
 public class RutaAlimentadora extends Ruta {
 
     private String barrioAsociado;
-
     public RutaAlimentadora(String nombre, int inicio, int fin, ArrayList<String> paradas, String barrio) {
         super(nombre, inicio, fin, paradas);
         this.barrioAsociado = barrio;
     }
 
-    @Override public String getTipo() { return "Alimentadora"; }
+    @Override
+    public String getTipo() { return "Alimentadora"; }
 
     @Override
     public boolean calcularDisponibilidad(int hora) {
@@ -28,16 +28,16 @@ public class RutaAlimentadora extends Ruta {
 
     @Override
     public String obtenerInstrucciones(String origen, String destino) {
-        int mins = (getListadoParadas().size() - 1) * 7;
+        int mins = (getListadoParadas().size() - 1) * 7;  //Aqui asumimos que cada tramo de un bus alimentadora toma 7 minutos
         return "RUTA: " + getNombreRuta() + " [ALIMENTADORA -> " + barrioAsociado + "]\n"
                 + "Recorrido : " + String.join(" -> ", getListadoParadas()) + "\n"
                 + "Aborde en : zona exterior de estacion " + origen + "\n"
                 + "Bajese en : " + destino + "\n"
-                + "Tiempo est: ~" + mins + " min  |  Tarifa: $2.700\n"
+                + "Tiempo est: ~" + mins + " min  |  Tarifa: $3.900\n"
                 + "AVISO     : cierra a las " + getHoraFin() + ":00 h";
     }
 
-    public String getBarrioAsociado()              { return barrioAsociado; }
+    public String getBarrioAsociado() { return barrioAsociado; }
     public void   setBarrioAsociado(String barrio) { this.barrioAsociado = barrio; }
 
     @Override

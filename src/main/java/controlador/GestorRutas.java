@@ -156,8 +156,9 @@ public class GestorRutas {
             }
         } catch (IOException | NumberFormatException e) {
             System.err.println("Error cargando rutas: " + e.getMessage());
+        } finally{
+            reconstruirGrafo();  //apesar de que haya errores, construimos siempre el grafo.
         }
-        reconstruirGrafo();
     }
 
     //proceso inverso para guardar datos.

@@ -1,2 +1,4 @@
-# usuarios.txt | ROL;Nombre;Clave;Extra
-ADMIN;admin;admin123;Operaciones
+# usuarios.txt | ID;Nombre;Clave
+admin1;nombre1;admin123;
+admin2;nombre2;admin123;
+2007; Maria; 1211;

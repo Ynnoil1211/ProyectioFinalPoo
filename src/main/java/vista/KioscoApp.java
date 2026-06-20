@@ -22,7 +22,7 @@ public class KioscoApp extends JFrame {
 
     // ── Controladores ────────────────────────────────────────────────────────
     private final GestorRutas    gestorRutas;
-    private final GestorUsuarios gestorUsuarios;
+    private final GestorAdmins gestorUsuarios;
     private final GestorTarjetas gestorTarjetas;
 
     // ── Navegación ───────────────────────────────────────────────────────────
@@ -52,7 +52,7 @@ public class KioscoApp extends JFrame {
     public KioscoApp() {
         // ── Inicializar controladores ────────────────────────────────────────
         gestorRutas    = new GestorRutas();
-        gestorUsuarios = new GestorUsuarios();
+        gestorUsuarios = new GestorAdmins();
         gestorTarjetas = new GestorTarjetas();
 
         gestorRutas.cargarDesdeArchivo();
@@ -159,7 +159,7 @@ public class KioscoApp extends JFrame {
     // ── Getters para los paneles ─────────────────────────────────────────────
 
     public GestorRutas    getGestorRutas()    { return gestorRutas; }
-    public GestorUsuarios getGestorUsuarios() { return gestorUsuarios; }
+    public GestorAdmins getGestorUsuarios() { return gestorUsuarios; }
     public GestorTarjetas getGestorTarjetas() { return gestorTarjetas; }
 
     // ── Main ─────────────────────────────────────────────────────────────────

@@ -4,14 +4,7 @@ package modelo;
 // Universidad de Cartagena - POO 2026-1
 import java.util.ArrayList;
 
-/**
- * Clase abstracta base de toda ruta del sistema TransCaribe.
- *
- * SOLID-SRP : solo conoce datos y comportamiento de una ruta.
- * SOLID-OCP : se extiende con nuevos tipos sin modificar esta clase.
- * SOLID-LSP : RutaTroncal y RutaAlimentadora sustituyen a Ruta sin romper nada.
- */
-
+//Clase abstracta base de toda ruta del sistema TransCaribe.
 /**
  * JUSTIFICACION DE NO EXTENDER SERIALIZABLE:
  * Dado que los datos se manejan desde un archivo de texto plano (.txt), decidimos manejar la lectura y salida de
@@ -22,27 +15,23 @@ import java.util.ArrayList;
  */
 public abstract class Ruta {
 
-    private String            nombreRuta;
-    private int               horaInicio;
-    private int               horaFin;
+    private String nombreRuta;
+    private int horaInicio;
+    private int horaFin;
     private ArrayList<String> listadoParadas;
 
-    public Ruta(String nombreRuta, int horaInicio, int horaFin,
-                ArrayList<String> listadoParadas) {
-        this.nombreRuta     = nombreRuta;
-        this.horaInicio     = horaInicio;
-        this.horaFin        = horaFin;
+    public Ruta(String nombreRuta, int horaInicio, int horaFin, ArrayList<String> listadoParadas) {
+        this.nombreRuta = nombreRuta;
+        this.horaInicio = horaInicio;
+        this.horaFin = horaFin;
         this.listadoParadas = listadoParadas;
     }
 
-    // ── Métodos abstractos (polimorfismo) ───────────────────────────────────
-
+    // ── Métodos abstractos (polimorfismo) :
     /** @return true si la ruta opera a la hora indicada */
     public abstract boolean calcularDisponibilidad(int horaActual);
-
     /** @return instrucciones formateadas para mostrar en el kiosco */
     public abstract String obtenerInstrucciones(String origen, String destino);
-
     /** @return tipo legible: "Troncal" o "Alimentadora" */
     public abstract String getTipo();
 
@@ -58,20 +47,19 @@ public abstract class Ruta {
     }
 
     // ── Getters & Setters ───────────────────────────────────────────────────
-
-    public String            getNombreRuta()     { return nombreRuta; }
-    public void              setNombreRuta(String v) { this.nombreRuta = v; }
-    public int               getHoraInicio()     { return horaInicio; }
-    public void              setHoraInicio(int v){ this.horaInicio = v; }
-    public int               getHoraFin()        { return horaFin; }
-    public void              setHoraFin(int v)   { this.horaFin = v; }
+// ── Getters & Setters :
+    public String getNombreRuta() { return nombreRuta; }
+    public void setNombreRuta(String v) { this.nombreRuta = v; }
+    public int getHoraInicio() { return horaInicio; }
+    public void setHoraInicio(int v){ this.horaInicio = v; }
+    public int getHoraFin() { return horaFin; }
+    public void setHoraFin(int v) { this.horaFin = v; }
     public ArrayList<String> getListadoParadas() { return listadoParadas; }
-    public void              setListadoParadas(ArrayList<String> v) { this.listadoParadas = v; }
+    public void setListadoParadas(ArrayList<String> v) { this.listadoParadas = v; }
+
 
     @Override
     public String toString() {
-        return "[" + getTipo() + "] " + nombreRuta
-                + " (" + horaInicio + ":00-" + horaFin + ":00) | "
-                + String.join(" -> ", listadoParadas);
+        return "[" + getTipo() + "] " + nombreRuta + " (" + horaInicio + ":00-" + horaFin + ":00) | " + String.join(" -> ", listadoParadas);
     }
 }
