@@ -22,26 +22,8 @@ Troncal;X106;5;21;Variante,Madre Bernarda,La Castellana,Cuatro Vientos,Bazurto,D
 Pesos;15,4,6,8,3,3,3,3,4
 Alimentadora;A101;5;22;Ciudad Jardín,Patio Portal;Ciudad Jardín
 Pesos;10
-Alimentadora;A102;5;22;Patio Portal,UTB;UTB
-Pesos;15
-Alimentadora;A103;5;22;Mandela,San Fernando,Santa Lucía;Mandela
-Pesos;15,10
-Alimentadora;A104;5;22;Mandela,Socorro,Santa Lucía;Mandela
-Pesos;15,8
-Alimentadora;A105;5;22;Simón Bolívar,Socorro,Santa Lucía;Simón Bolívar
-Pesos;10,8
 Alimentadora;A107;5;22;Blas de Lezo,Santa Lucía;Blas de Lezo
 Pesos;12
-Alimentadora;A108;5;22;Campestre,Santa Lucía;Campestre
-Pesos;15
-Alimentadora;A111;5;22;Nuevo Bosque,Santa Lucía;Nuevo Bosque
-Pesos;15
-Alimentadora;A114;5;22;Flor del Campo,Patio Portal;Flor del Campo
-Pesos;20
-Alimentadora;A117;5;22;Pozón,Villa Estrella,Patio Portal;Pozón
-Pesos;15,15
-Alimentadora;A118;5;22;Patio Portal,Ciudadela de la Paz;Ciudadela de la Paz
-Pesos;15
 Alimentadora;C001;5;21;Ciudadela 2000,Manga,Centro;Ciudadela 2000
 Pesos;25,15
 Alimentadora;C016;5;21;Patio Portal,Terminal de Transportes;Terminal de Transportes

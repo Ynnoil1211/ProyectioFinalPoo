@@ -45,7 +45,7 @@ public class GestorTarjetas {
         for (TarjetaUsuario t : tarjetas) {
             if (t.getNumeroTarjeta().equalsIgnoreCase(numero)) return t;
         }
-        throw new TarjetaNoEncontradaException("El número de tarjeta " + numero + " no existe en el sistema.");
+        throw new TarjetaNoEncontradaException(numero);
     }
 
     // ── CRUD :
@@ -68,6 +68,7 @@ public class GestorTarjetas {
         tarjeta.recargar(monto);
         guardarEnArchivo();
     }
+
 
     // DELETE — solo ADMIN debe llamar este metodo
     public boolean eliminarTarjeta(String numero) {
