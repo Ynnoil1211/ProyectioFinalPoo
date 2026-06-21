@@ -51,6 +51,9 @@ public class GestorRutas {
         CONTINGENCIA.put("san fernando", "Madre Bernarda (tome A104)");
         CONTINGENCIA.put("blas de lezo", "Castellana (tome A107 o A108)");
 
+        CONTINGENCIA.put("av. pedro romero", "Cuatro Vientos");
+        CONTINGENCIA.put("13 de junio", "Cuatro Vientos");
+
         // Zona Suroriente
         CONTINGENCIA.put("olaya", "Las Delicias o Ejecutivos (tome X104)");
     }
@@ -69,9 +72,8 @@ public class GestorRutas {
      * @throws FueraDeServicioException si hora fuera del rango operativo
      * @throws RutaNoEncontradaException si no hay camino posible
      */
-    public List<String> buscarRutaOptima(String origen, String destino, int hora) throws
-            OrigenDestinoIdenticoException, FueraDeServicioException, RutaNoEncontradaException {
-
+    public List<String> buscarRutaOptima(String origen, String destino, int hora)
+            throws  OrigenDestinoIdenticoException, FueraDeServicioException, RutaNoEncontradaException {
         if (origen.equalsIgnoreCase(destino))
             throw new OrigenDestinoIdenticoException(origen);
 
@@ -112,9 +114,7 @@ public class GestorRutas {
         int minutosDesdeValidacion = 0; // reloj de 90 min
         int tiempoTotalViaje = 0;
 
-        // Por cada ruta usada dentro de la ventana de pago actual, guarda el
-        // sentido (desde->hasta) de su primer uso. Sirve para detectar si el
-        // usuario esta retomando esa misma ruta en sentido contrario (regreso).
+
         Map<String, String> sentidoPorRutaEnVentana = new HashMap<>();
         // Nueva lista solo para guardar la secuencia de buses/ruta
         List<String> rutasUsadas = new ArrayList<>();
@@ -190,10 +190,14 @@ public class GestorRutas {
         return sb.toString();
     }
 
-
+    //Para simepre obtener una respuesta, llamaremos al mapa previamente construido con el metodo getOrDefault, asi, al no obtener una respuesta,
+    // se lanza la frase default "la estacion troncal mas cercana".
+    //Ejemplo:
+    //Contingencia: dirijase a *Cuatro Vientos* y continue en transporte alterno.
+    //O: Contingencia: dirijase a *la estacion tronal* mas cercana y continue en transporte alterno.
     public String generarContingencia(String destino) {
         String plan = CONTINGENCIA.getOrDefault(destino.toLowerCase(), "la estacion troncal mas cercana");
-        return "Ruta directa no disponible a " + destino + ".\n" + "Contingencia: dirijase a " + plan + " y continue en transporte alterno.";
+        return "Contingencia: dirijase a " + plan + " y continue en transporte alterno.";
     }
 
     // CRUD sobre rutas.txt:

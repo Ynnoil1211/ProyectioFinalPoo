@@ -10,8 +10,7 @@ public class RutaNoEncontradaException extends Exception {
     private final String destinoBuscado;
 
     public RutaNoEncontradaException(String destino) {
-        super("El destino \"" + destino + "\" aun no esta cubierto "
-                + "por la red TransCaribe. Comuniquese con atencion al usuario.");
+        super("El destino \"" + destino + "\" aun no esta cubierto por la red TransCaribe, o esta cerrada la ruta por el horario. \nComuniquese con atencion al usuario.");
         this.destinoBuscado = destino;
     }
 

@@ -285,23 +285,17 @@ class PanelPublico extends JPanel {
     private void buscarRuta() {
         String origen  = (String) comboOrigen.getSelectedItem();
         String destino = (String) comboDestino.getSelectedItem();
-        int    hora    = (int) spinnerHora.getValue();
-
+        int hora = (int) spinnerHora.getValue();
         if (origen == null || destino == null) {
             txtResultadoRuta.setText("No hay estaciones disponibles para seleccionar.");
             return;
         }
-
         try {
-            List<String> camino = app.getGestorRutas()
-                    .buscarRutaOptima(origen, destino, hora);
-            String instrucciones = app.getGestorRutas()
-                    .generarInstrucciones(camino, hora);
+            List<String> camino = app.getGestorRutas().buscarRutaOptima(origen, destino, hora);
+            String instrucciones = app.getGestorRutas().generarInstrucciones(camino, hora);
             txtResultadoRuta.setText(instrucciones);
-
             // Registrar la consulta en el historial (modo append)
-            new modelo.RegistroConsulta(origen, destino,
-                    camino.get(camino.size() - 1), hora).registrar();
+            new modelo.RegistroConsulta(origen, destino, camino.get(camino.size() - 1), hora).registrar();
 
         } catch (OrigenDestinoIdenticoException e) {
             txtResultadoRuta.setText("AVISO: " + e.getMessage());
@@ -309,7 +303,7 @@ class PanelPublico extends JPanel {
             txtResultadoRuta.setText("FUERA DE SERVICIO: " + e.getMessage());
         } catch (RutaNoEncontradaException e) {
             txtResultadoRuta.setText("SIN CONEXION DIRECTA: " + e.getMessage()
-                    + "\n\n" + app.getGestorRutas().generarContingencia(destino));
+                    + "\n" + app.getGestorRutas().generarContingencia(destino));
         }
     }
 

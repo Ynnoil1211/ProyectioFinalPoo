@@ -14,7 +14,7 @@ public class FueraDeServicioException extends Exception {
     public FueraDeServicioException(int hora) {
         super("El sistema TransCaribe no opera a las " + hora + ":00 h. "
                 + "El servicio funciona de 04:30 a 23:00. "
-                + "Intente consultar en el horario de operacion.");
+                + "\n Intente consultar en el horario de operacion." + '\n');
         this.horaConsultada = hora;
     }
 
