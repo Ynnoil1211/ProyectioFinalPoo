@@ -1,13 +1,13 @@
 # rutas.txt | Formato: Tipo;Nombre;HInicio;HFin;Paradas[;Barrio]
 # Pesos;t1,t2,t3... (Tiempos en minutos para cada tramo)
-Troncal;T100E;5;21;Patio Portal,Madre Bernarda,La Castellana,Cuatro Vientos,Bazurto,Centro,La Bodeguita;Centro
-Pesos;3,4,5,8,12,3
-Troncal;T101;5;22;Patio Portal,Madre Bernarda,La Castellana,Los Ejecutivos,Villa Olímpica,Cuatro Vientos,Rep. del Líbano,España,María Auxiliadora,El Prado,Bazurto,Delicias,La Popa,Lo Amador,Chambacú,Centro,La Bodeguita;Centro
-Pesos;3,3,2,2,2,2,2,2,2,2,2,2,2,2,4,3
-Troncal;T102;5;21;Patio Portal,Madre Bernarda,La Castellana,Los Ejecutivos,Villa Olímpica,Cuatro Vientos,España,El Prado,Bazurto,Delicias,La Popa,Chambacú,Centro,Crespo;Crespo
-Pesos;3,3,2,2,2,3,3,2,2,2,3,4,12
-Troncal;T103;5;21;Patio Portal,Madre Bernarda,La Castellana,Los Ejecutivos,Villa Olímpica,Cuatro Vientos,España,El Prado,Bazurto,Delicias,La Popa,Chambacú,Centro,La Bodeguita,Bocagrande;Bocagrande
-Pesos;3,3,2,2,2,3,3,2,2,2,3,4,3,15
+Troncal;T100E;6;20;Patio Portal,Madre Bernarda,La Castellana,Cuatro Vientos,Maria Auxiliadora,Centro,La Bodeguita;Centro
+Pesos;10,10,10,10,10,10
+Troncal;T101;5;22;Patio Portal,Madre Bernarda,La Castellana,Los Ejecutivos,Cuatro Vientos,España,El Prado,Bazurto,La Popa,Chambacú,Centro,La Bodeguita;Centro
+Pesos;6,6,6,6,6,5,5,5,5,5,5
+Troncal;T102;5;21;Patio Portal,Madre Bernarda,Villa Olímpica,República del Líbano,María Auxiliadora,El Prado,Bazurto,Chambacú,Centro,Crespo;Crespo
+Pesos;4,4,3,3,3,3,3,3,62
+Troncal;T103;5;21;Patio Portal,Madre Bernarda,La Castellana,Los Ejecutivos,Cuatro Vientos,España,Bazurto,La Popa,Chambacú,La Bodeguita,Bocagrande;Bocagrande
+Pesos;5,5,5,5,4,4,4,4,4,36
 Troncal;X101;5;21;San José de los Campanos,13 de Junio,Cuatro Vientos,Rep. del Líbano,España,El Prado,Bazurto,Delicias,La Popa,Lo Amador,Chambacú,Centro;San José de los Campanos
 Pesos;20,12,3,3,4,3,3,3,3,3,4
 Troncal;X102;5;21;Patio Portal,Madre Bernarda,Bosque,Bazurto,Delicias,La Popa,Lo Amador,Chambacú,Centro;Bosque
