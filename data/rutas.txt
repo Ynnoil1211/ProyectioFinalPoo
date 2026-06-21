@@ -1,11 +1,21 @@
 # rutas.txt | Formato: Tipo;Nombre;HInicio;HFin;Paradas[;Barrio]
-Troncal;T101;5;22;Patio Portal,Madre Bernarda,Castellana,Ejecutivos,Cuatro Vientos,Bazurto,Las Delicias,Chambacú,Centro,Bodeguita;Pie de la Popa
+Troncal;T101;5;22;Patio Portal,Madre Bernarda,Castellana,Ejecutivos,Cuatro Vientos,Bazurto,Las Delicias,Chambacú,Centro,Bodeguita
 Troncal;T102;5;21;Patio Portal,Castellana,Ejecutivos,Bazurto,Chambacú,Marbella,Cabrero,Crespo;Crespo
-Troncal;T103;5;21;Patio Portal,Castellana,Ejecutivos,Bazurto,Bodeguita,Bocagrande;Bocagrande
+Troncal;T103;5;21;Patio Portal,Castellana,Ejecutivos,Bazurto,Bodeguita,Bocagrande,Castillogrande,El Laguito;Bocagrande
+Troncal;X101;5;21;San Jose de los Campanos,13 de Junio,Cuatro Vientos,Bazurto,Chambacú,Centro;San Jose de los Campanos
 Troncal;X102;5;21;Patio Portal,Ceballos,Alto Bosque,El Bosque,Bazurto,Centro;El Bosque
 Troncal;X103;5;21;Patio Portal,Zaragocilla,Los Alpes,Consulado,Bazurto,Centro;Zaragocilla
 Troncal;X104;5;21;Patio Portal,Las Palmeras,Olaya,El Libano,Cuatro Vientos,Centro;Olaya
 Troncal;X105;5;21;Ciudadela 2000,Crisanto Luque,Manga,Centro,Bocagrande;Manga
-Alimentadora;A104;5;22;Patio Portal,Nelson Mandela,San Fernando;San Fernando
+Troncal;X106;5;21;Pasacaballos,Mamonal,Variante,Bomba el Amparo,Centro;Mamonal
+Alimentadora;A101;5;22;Ciudadela 2000,San Jose de los Campanos,Madre Bernarda;Ciudadela 2000
+Alimentadora;A103;5;22;Patio Portal,San Fernando,Simon Bolivar;San Fernando
+Alimentadora;A104;5;22;Patio Portal,Nelson Mandela,San Fernando;Nelson Mandela
+Alimentadora;A105;5;22;Patio Portal,Socorro,Blas de Lezo;Socorro
 Alimentadora;A107;5;22;Castellana,Blas de Lezo,Los Caracoles;Blas de Lezo
-Alimentadora;A108;5;22;Castellana,El Campestre,Vista Hermosa,Blas de Lezo;Blas de Lezo
+Alimentadora;A108;5;22;Castellana,El Campestre,Vista Hermosa;El Campestre
+Alimentadora;A109;5;22;Castellana,Los Alpes,Nuevo Bosque;Nuevo Bosque
+Alimentadora;A111;5;22;Castellana,El Recreo,San Pedro;El Recreo
+Alimentadora;A114;5;22;Patio Portal,Flor del Campo,Colombiaton;Flor del Campo
+Alimentadora;A117;5;22;Patio Portal,El Pozon,Villa Estrella;El Pozon
+Alimentadora;C001;5;21;Ciudadela 2000,Ceballos,Manga,Centro;Manga

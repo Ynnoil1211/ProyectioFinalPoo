@@ -91,10 +91,16 @@ public class GestorRutas {
     /**
      * Dado un camino de IDs, devuelve instrucciones legibles para cada tramo.
      *
-     * REGLA DE TARIFA INTEGRADA:
-     * Se puede transbordar entre troncales libremente.
-     * Se permite un (1) transbordo a ruta alimentadora.
-     * Si se toma una segunda ruta alimentadora, implica salir del sistema y volver a pagar.
+     * REGLA DE LOS 90 MINUTOS (tarifa integrada):
+     *   - El reloj de 90 minutos arranca en la primera validacion del viaje.
+     *   - Mientras no pasen mas de 90 min acumulados desde esa validacion,
+     *     se permiten hasta 4 transbordos sin costo adicional.
+     *   - Un transbordo NO es gratis si:
+     *       a) ya pasaron mas de 90 min desde la primera validacion, o
+     *       b) ya se usaron los 4 transbordos disponibles, o
+     *       c) la ruta se vuelve a tomar en sentido contrario (regreso).
+     *   - Continuar en el MISMO bus/ruta (sin cambiar de nombreRuta) nunca
+     *     cuenta como transbordo: no consume cupo ni reinicia nada.
      */
     public String generarInstrucciones(List<String> camino, int hora) {
         if (camino.size() < 2) return "Ya se encuentra en el destino.";
@@ -103,9 +109,18 @@ public class GestorRutas {
         sb.append("Recorrido: ").append(String.join(" -> ", camino)).append("\n");
         sb.append("─────────────────────────────\n");
 
+        final int VENTANA_MINUTOS  = 90;
+        final int MAX_TRANSBORDOS  = 4;
+
         String rutaAnterior = null;
-        int contadorAlimentadoras = 0;
-        int tarifasACobrar = 1; // Base: siempre se cobra 1 pasaje al entrar
+        int tarifasACobrar          = 0; // pasajes pagados en todo el viaje
+        int transbordosEnVentana    = 0; // transbordos usados en la ventana actual (0-4)
+        int minutosDesdeValidacion  = 0; // reloj de 90 min de la ventana actual
+
+        // Por cada ruta usada dentro de la ventana de pago actual, guarda el
+        // sentido (desde->hasta) de su primer uso. Sirve para detectar si el
+        // usuario esta retomando esa misma ruta en sentido contrario (regreso).
+        Map<String, String> sentidoPorRutaEnVentana = new HashMap<>();
 
         for (int i = 0; i < camino.size() - 1; i++) {
             String desde = camino.get(i);
@@ -117,8 +132,7 @@ public class GestorRutas {
             for (AristaRuta arista : nodo.getConexiones()) {
                 if (arista.getDestino().equalsIgnoreCase(hasta) && arista.estaDisponible(hora)) {
                     String nombreRutaActual = arista.getNombreRuta();
-                    boolean esAlimentadora = nombreRutaActual.toUpperCase().startsWith("A"); // Asumiendo que las alimentadoras empiezan con 'A'
-                    boolean esTransbordo = rutaAnterior != null && !rutaAnterior.equalsIgnoreCase(nombreRutaActual);
+                    boolean continuaMismoBus = nombreRutaActual.equalsIgnoreCase(rutaAnterior);
 
                     sb.append("Tramo ").append(i + 1).append(": ")
                             .append(desde).append(" -> ").append(hasta)
@@ -126,18 +140,54 @@ public class GestorRutas {
                             .append(" (~").append(arista.getPesoMinutos())
                             .append(" min)");
 
-                    if (esTransbordo) {
-                        if (esAlimentadora) {
-                            contadorAlimentadoras++;
-                            if (contadorAlimentadoras > 1) {
-                                sb.append("  [¡Atención! 2da Alimentadora: requiere nuevo pago]");
-                                tarifasACobrar++;
-                            } else {
-                                sb.append("  [Transbordo a Alimentadora integrado]");
-                            }
+                    if (tarifasACobrar == 0) {
+                        // Primera validacion del viaje: siempre se cobra y arranca el reloj
+                        tarifasACobrar = 1;
+                        minutosDesdeValidacion = 0;
+                        transbordosEnVentana = 0;
+                        sentidoPorRutaEnVentana.clear();
+                        sentidoPorRutaEnVentana.put(nombreRutaActual, desde + "->" + hasta);
+                        sb.append("  [Pasaje inicial — reloj de 90 min activado]");
+
+                    } else if (continuaMismoBus) {
+                        // Sigue en el mismo bus: no es transbordo, solo suma tiempo
+                        minutosDesdeValidacion += arista.getPesoMinutos();
+
+                    } else {
+                        // Cambio de ruta -> posible transbordo. Se verifican las 3 reglas:
+                        boolean dentroDeVentana = minutosDesdeValidacion <= VENTANA_MINUTOS;
+                        boolean cupoDisponible  = transbordosEnVentana < MAX_TRANSBORDOS;
+
+                        String sentidoPrevio = sentidoPorRutaEnVentana.get(nombreRutaActual);
+                        boolean mismoSentido = sentidoPrevio == null
+                                || !sentidoPrevio.equals(hasta + "->" + desde);
+
+                        if (dentroDeVentana && cupoDisponible && mismoSentido) {
+                            // Transbordo electronico/fisico valido: $0
+                            transbordosEnVentana++;
+                            minutosDesdeValidacion += arista.getPesoMinutos();
+                            sentidoPorRutaEnVentana.putIfAbsent(nombreRutaActual, desde + "->" + hasta);
+                            sb.append("  [Transbordo $0 — ").append(transbordosEnVentana)
+                                    .append("/").append(MAX_TRANSBORDOS)
+                                    .append(" usados, ").append(minutosDesdeValidacion)
+                                    .append("/").append(VENTANA_MINUTOS).append(" min]");
                         } else {
-                            // Transbordo hacia troncal (asumiendo que viene de otra troncal o es el inicio)
-                            sb.append("  [Transbordo Troncal sin costo]");
+                            // No cumple alguna condicion -> nuevo pasaje y se reinicia la ventana
+                            tarifasACobrar++;
+                            minutosDesdeValidacion = arista.getPesoMinutos();
+                            transbordosEnVentana = 0;
+                            sentidoPorRutaEnVentana.clear();
+                            sentidoPorRutaEnVentana.put(nombreRutaActual, desde + "->" + hasta);
+
+                            String motivo;
+                            if (!dentroDeVentana) {
+                                motivo = "vencieron los 90 min";
+                            } else if (!cupoDisponible) {
+                                motivo = "ya usaste los 4 transbordos";
+                            } else {
+                                motivo = "ruta en sentido contrario (regreso)";
+                            }
+                            sb.append("  [¡Nuevo pasaje! (").append(motivo).append(")]");
                         }
                     }
                     sb.append("\n");
@@ -150,10 +200,15 @@ public class GestorRutas {
 
         double totalAPagar = tarifasACobrar * modelo.TarjetaUsuario.TARIFA;
         sb.append("─────────────────────────────\n");
+        sb.append("Pasajes cobrados: ").append(tarifasACobrar).append("\n");
         sb.append("Tarifa total estimada: $").append(String.format("%.0f", totalAPagar));
 
         if (tarifasACobrar > 1) {
-            sb.append("\nNota: El viaje requiere salir de la estación, por lo que se cobra pasaje adicional.");
+            sb.append("\nNota: el viaje supero la ventana de 90 min, el limite de 4 ")
+                    .append("transbordos, o incluyo un regreso por la misma ruta, ")
+                    .append("por lo que se genero un pasaje adicional.");
+        } else {
+            sb.append("\nNota: viaje cubierto con un unico pasaje gracias a la regla de los 90 minutos.");
         }
 
         return sb.toString();
