@@ -1,21 +1,52 @@
 # rutas.txt | Formato: Tipo;Nombre;HInicio;HFin;Paradas[;Barrio]
-Troncal;T101;5;22;Patio Portal,Madre Bernarda,Castellana,Ejecutivos,Cuatro Vientos,Bazurto,Las Delicias,Chambacú,Centro,Bodeguita
-Troncal;T102;5;21;Patio Portal,Castellana,Ejecutivos,Bazurto,Chambacú,Marbella,Cabrero,Crespo;Crespo
-Troncal;T103;5;21;Patio Portal,Castellana,Ejecutivos,Bazurto,Bodeguita,Bocagrande,Castillogrande,El Laguito;Bocagrande
-Troncal;X101;5;21;San Jose de los Campanos,13 de Junio,Cuatro Vientos,Bazurto,Chambacú,Centro;San Jose de los Campanos
-Troncal;X102;5;21;Patio Portal,Ceballos,Alto Bosque,El Bosque,Bazurto,Centro;El Bosque
-Troncal;X103;5;21;Patio Portal,Zaragocilla,Los Alpes,Consulado,Bazurto,Centro;Zaragocilla
-Troncal;X104;5;21;Patio Portal,Las Palmeras,Olaya,El Libano,Cuatro Vientos,Centro;Olaya
-Troncal;X105;5;21;Ciudadela 2000,Crisanto Luque,Manga,Centro,Bocagrande;Manga
-Troncal;X106;5;21;Pasacaballos,Mamonal,Variante,Bomba el Amparo,Centro;Mamonal
-Alimentadora;A101;5;22;Ciudadela 2000,San Jose de los Campanos,Madre Bernarda;Ciudadela 2000
-Alimentadora;A103;5;22;Patio Portal,San Fernando,Simon Bolivar;San Fernando
-Alimentadora;A104;5;22;Patio Portal,Nelson Mandela,San Fernando;Nelson Mandela
-Alimentadora;A105;5;22;Patio Portal,Socorro,Blas de Lezo;Socorro
-Alimentadora;A107;5;22;Castellana,Blas de Lezo,Los Caracoles;Blas de Lezo
-Alimentadora;A108;5;22;Castellana,El Campestre,Vista Hermosa;El Campestre
-Alimentadora;A109;5;22;Castellana,Los Alpes,Nuevo Bosque;Nuevo Bosque
-Alimentadora;A111;5;22;Castellana,El Recreo,San Pedro;El Recreo
-Alimentadora;A114;5;22;Patio Portal,Flor del Campo,Colombiaton;Flor del Campo
-Alimentadora;A117;5;22;Patio Portal,El Pozon,Villa Estrella;El Pozon
-Alimentadora;C001;5;21;Ciudadela 2000,Ceballos,Manga,Centro;Manga
+# Pesos;t1,t2,t3... (Tiempos en minutos para cada tramo)
+Troncal;T100E;5;21;Patio Portal,Madre Bernarda,La Castellana,Cuatro Vientos,Bazurto,Centro,La Bodeguita;Centro
+Pesos;3,4,5,8,12,3
+Troncal;T101;5;22;Patio Portal,Madre Bernarda,La Castellana,Los Ejecutivos,Villa Olímpica,Cuatro Vientos,Rep. del Líbano,España,María Auxiliadora,El Prado,Bazurto,Delicias,La Popa,Lo Amador,Chambacú,Centro,La Bodeguita;Centro
+Pesos;3,3,2,2,2,2,2,2,2,2,2,2,2,2,4,3
+Troncal;T102;5;21;Patio Portal,Madre Bernarda,La Castellana,Los Ejecutivos,Villa Olímpica,Cuatro Vientos,España,El Prado,Bazurto,Delicias,La Popa,Chambacú,Centro,Crespo;Crespo
+Pesos;3,3,2,2,2,3,3,2,2,2,3,4,12
+Troncal;T103;5;21;Patio Portal,Madre Bernarda,La Castellana,Los Ejecutivos,Villa Olímpica,Cuatro Vientos,España,El Prado,Bazurto,Delicias,La Popa,Chambacú,Centro,La Bodeguita,Bocagrande;Bocagrande
+Pesos;3,3,2,2,2,3,3,2,2,2,3,4,3,15
+Troncal;X101;5;21;San José de los Campanos,13 de Junio,Cuatro Vientos,Rep. del Líbano,España,El Prado,Bazurto,Delicias,La Popa,Lo Amador,Chambacú,Centro;San José de los Campanos
+Pesos;20,12,3,3,4,3,3,3,3,3,4
+Troncal;X102;5;21;Patio Portal,Madre Bernarda,Bosque,Bazurto,Delicias,La Popa,Lo Amador,Chambacú,Centro;Bosque
+Pesos;3,15,15,3,3,3,3,4
+Troncal;X103;5;21;Patio Portal,Madre Bernarda,Consulado,Bazurto,Delicias,La Popa,Lo Amador,Chambacú,Centro;Consulado
+Pesos;3,10,15,3,3,3,3,4
+Troncal;X104;5;21;Terminal de Transportes,Av. Pedro Romero,Bazurto,Delicias,La Popa,Lo Amador,Chambacú,Centro;Terminal de Transportes
+Pesos;10,25,3,3,3,3,4
+Troncal;X105;5;21;Ciudadela 2000,Crisanto Luque,Centro,La Bodeguita,Bocagrande;Ciudadela 2000
+Pesos;15,20,3,15
+Troncal;X106;5;21;Variante,Madre Bernarda,La Castellana,Cuatro Vientos,Bazurto,Delicias,La Popa,Lo Amador,Chambacú,Centro;Variante
+Pesos;15,4,6,8,3,3,3,3,4
+Alimentadora;A101;5;22;Ciudad Jardín,Patio Portal;Ciudad Jardín
+Pesos;10
+Alimentadora;A102;5;22;Patio Portal,Universidad Tecnológica;Universidad Tecnológica
+Pesos;15
+Alimentadora;A103;5;22;Mandela,San Fernando,Santa Lucía;Mandela
+Pesos;15,10
+Alimentadora;A104;5;22;Mandela,Socorro,Santa Lucía;Mandela
+Pesos;15,8
+Alimentadora;A105;5;22;Simón Bolívar,Socorro,Santa Lucía;Simón Bolívar
+Pesos;10,8
+Alimentadora;A107;5;22;Blas de Lezo,Santa Lucía;Blas de Lezo
+Pesos;12
+Alimentadora;A108;5;22;Campestre,Santa Lucía;Campestre
+Pesos;15
+Alimentadora;A111;5;22;Nuevo Bosque,Santa Lucía;Nuevo Bosque
+Pesos;15
+Alimentadora;A114;5;22;Flor del Campo,Patio Portal;Flor del Campo
+Pesos;20
+Alimentadora;A117;5;22;Pozón,Villa Estrella,Patio Portal;Pozón
+Pesos;15,15
+Alimentadora;A118;5;22;Patio Portal,Ciudadela de la Paz;Ciudadela de la Paz
+Pesos;15
+Alimentadora;C001;5;21;Ciudadela 2000,Manga,Centro;Ciudadela 2000
+Pesos;25,15
+Alimentadora;C016;5;21;Patio Portal,Terminal de Transporte;Terminal de Transporte
+Pesos;15
+Alimentadora;C017;5;21;La Bodeguita,Zona Norte;Zona Norte
+Pesos;25
+Alimentadora;C018;5;21;La Bodeguita,Torices;Torices
+Pesos;15

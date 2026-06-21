@@ -3,6 +3,7 @@ package modelo;
 // Integrantes: Lionny Lin - 0222510050 & Samuel Campo - 0222510057
 // Universidad de Cartagena - POO 2026-1
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 //Clase abstracta base de toda ruta del sistema TransCaribe.
 /**
@@ -19,12 +20,19 @@ public abstract class Ruta {
     private int horaInicio;
     private int horaFin;
     private ArrayList<String> listadoParadas;
+    private ArrayList<Integer> pesosTramos;
 
-    public Ruta(String nombreRuta, int horaInicio, int horaFin, ArrayList<String> listadoParadas) {
+    public Ruta(String nombreRuta, int horaInicio, int horaFin, ArrayList<String> listadoParadas, ArrayList<Integer> pesosTramos) {
         this.nombreRuta = nombreRuta;
         this.horaInicio = horaInicio;
         this.horaFin = horaFin;
         this.listadoParadas = listadoParadas;
+        if (pesosTramos == null || pesosTramos.size() != listadoParadas.size() - 1) {
+            throw new IllegalArgumentException(
+                    "Ruta " + nombreRuta + ": se esperaban " + (listadoParadas.size() - 1)
+                            + " pesos pero se recibieron " + (pesosTramos == null ? 0 : pesosTramos.size()));
+        }
+        this.pesosTramos = pesosTramos;
     }
 
     // ── Métodos abstractos (polimorfismo) :
@@ -40,10 +48,15 @@ public abstract class Ruta {
     /**
      * Serializa la ruta a CSV para rutas.txt
      * Formato: Tipo;Nombre;HoraInicio;HoraFin;Parada1,Parada2,...
+     *          Pesos;t1,t2,t3...
      */
     public String toCSV() {
-        return getTipo() + ";" + nombreRuta + ";" + horaInicio + ";"
+        String lineaRuta = getTipo() + ";" + nombreRuta + ";" + horaInicio + ";"
                 + horaFin + ";" + String.join(",", listadoParadas);
+        String lineaPesos = "Pesos;" + pesosTramos.stream()
+                .map(String::valueOf)
+                .collect(Collectors.joining(","));
+        return lineaRuta + "\n" + lineaPesos;
     }
 
     // ── Getters & Setters ───────────────────────────────────────────────────
@@ -56,7 +69,8 @@ public abstract class Ruta {
     public void setHoraFin(int v) { this.horaFin = v; }
     public ArrayList<String> getListadoParadas() { return listadoParadas; }
     public void setListadoParadas(ArrayList<String> v) { this.listadoParadas = v; }
-
+    public ArrayList<Integer> getPesosTramos() {return pesosTramos;}
+    public void setPesosTramos(ArrayList<Integer> pesosTramos) {this.pesosTramos = pesosTramos;}
 
     @Override
     public String toString() {

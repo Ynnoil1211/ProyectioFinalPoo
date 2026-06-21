@@ -49,15 +49,22 @@ public class GrafoRutas {
         nodos.clear();
         for (Ruta ruta : rutas) {
             List<String> paradas = ruta.getListadoParadas();
+            List<Integer> pesos  = ruta.getPesosTramos();
             for (String p : paradas) {
                 // Aseguremos que todas las paradas existan como nodos:
                 agregarNodo(p, p);  // nombre = ID en este caso
                 // Dado que nodos es un mapa, evitamos duplicado automaticamente
             }
+            if (pesos == null || pesos.size() != paradas.size() - 1) {
+                throw new IllegalStateException(
+                        "Ruta " + ruta.getNombreRuta() + ": se esperaban "
+                                + (paradas.size() - 1) + " pesos pero se encontraron "
+                                + (pesos == null ? 0 : pesos.size()));
+            }
             for (int i = 0; i < paradas.size() - 1; i++) {
                 String desde = paradas.get(i).toUpperCase(); // estacion actual
                 String hasta = paradas.get(i + 1).toUpperCase();  // estacion proxima
-                int peso = 6;  // minutos estimados por tramo
+                int peso = pesos.get(i);  // minutos estimados por tramo
                 // agregamos un nuevo tramo señalando las conexiones
                 agregarArista(desde, hasta, ruta.getNombreRuta(), peso, ruta.getHoraInicio(), ruta.getHoraFin());
                 // Arista inversa (mismo tiempo, misma ruta, pero en orden inverso)

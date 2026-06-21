@@ -242,11 +242,27 @@ public class GestorRutas {
                     int hi = Integer.parseInt(p[2].trim());  //Hora Inicio
                     int hf = Integer.parseInt(p[3].trim());  // Hora Final
                     ArrayList<String> paradas = new ArrayList<>();
-                    for (String parada : p[4].split(",")) paradas.add(parada.trim());  // Paradas divididas por ','.
+                    for (String parada : p[4].split(","))
+                        paradas.add(parada.trim());  // Paradas divididas por ','.
+
+                    String lineaPesos = br.readLine();
+                    if (lineaPesos == null || !lineaPesos.trim().toUpperCase().startsWith("PESOS;")) {
+                        continue; //ignoramos esta secuencia de ruta y peso
+                    }
+                    lineaPesos = lineaPesos.trim();
+                    String[] pesosStr = lineaPesos.substring(lineaPesos.indexOf(';') + 1).split(",");
+                    ArrayList<Integer> pesos = new ArrayList<>();
+                    for (String pesoStr : pesosStr)
+                        pesos.add(Integer.parseInt(pesoStr.trim()));
+
+                    if (pesos.size() != paradas.size() - 1) {
+                        continue; //ignoramos esta secuencia de ruta y peso
+                    }
+
                     if ("Troncal".equalsIgnoreCase(tipo)) {
-                        rutas.add(new RutaTroncal(nom, hi, hf, paradas));   // Procesar ruta Troncal.
+                        rutas.add(new RutaTroncal(nom, hi, hf, paradas, pesos));   // Procesar ruta Troncal.
                     } else if ("Alimentadora".equalsIgnoreCase(tipo) && p.length >= 6) {   // el sexto elemento es el barrio
-                        rutas.add(new RutaAlimentadora(nom, hi, hf, paradas, p[5].trim()));  // Procesar Ruta Alimentadora, p[5] es el barrio por el que circula la ruta
+                        rutas.add(new RutaAlimentadora(nom, hi, hf, paradas, p[5].trim(),pesos));  // Procesar Ruta Alimentadora, p[5] es el barrio por el que circula la ruta
                     }
                 }
             }

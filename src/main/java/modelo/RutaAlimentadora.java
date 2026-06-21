@@ -2,7 +2,6 @@ package modelo;
 
 // Integrantes: Lionny Lin - 0222510050 & Samuel Campo - 0222510057
 // Universidad de Cartagena - POO 2026-1
-
 import java.util.ArrayList;
 
 /**
@@ -13,8 +12,9 @@ import java.util.ArrayList;
 public class RutaAlimentadora extends Ruta {
 
     private String barrioAsociado;
-    public RutaAlimentadora(String nombre, int inicio, int fin, ArrayList<String> paradas, String barrio) {
-        super(nombre, inicio, fin, paradas);
+
+    public RutaAlimentadora(String nombre, int inicio, int fin, ArrayList<String> paradas, String barrio, ArrayList<Integer> pesosTramos) {
+        super(nombre, inicio, fin, paradas, pesosTramos);
         this.barrioAsociado = barrio;
     }
 
@@ -28,7 +28,8 @@ public class RutaAlimentadora extends Ruta {
 
     @Override
     public String obtenerInstrucciones(String origen, String destino) {
-        int mins = (getListadoParadas().size() - 1) * 7;  //Aqui asumimos que cada tramo de un bus alimentadora toma 7 minutos
+        int mins = 0;
+        for (int peso : getPesosTramos()) mins += peso; // suma de tiempos reales por tramo
         return "RUTA: " + getNombreRuta() + " [ALIMENTADORA -> " + barrioAsociado + "]\n"
                 + "Recorrido : " + String.join(" -> ", getListadoParadas()) + "\n"
                 + "Aborde en : zona exterior de estacion " + origen + "\n"
@@ -38,10 +39,13 @@ public class RutaAlimentadora extends Ruta {
     }
 
     public String getBarrioAsociado() { return barrioAsociado; }
-    public void   setBarrioAsociado(String barrio) { this.barrioAsociado = barrio; }
+    public void setBarrioAsociado(String barrio) { this.barrioAsociado = barrio; }
 
     @Override
     public String toCSV() {
-        return super.toCSV() + ";" + barrioAsociado;
+        // super.toCSV() ya devuelve "lineaRuta\nlineaPesos";
+        // insertamos el barrio al final de la PRIMERA linea
+        String[] lineas = super.toCSV().split("\n", 2);
+        return lineas[0] + ";" + barrioAsociado + "\n" + lineas[1];
     }
 }

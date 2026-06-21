@@ -7,11 +7,12 @@ import java.util.ArrayList;
 /** Rutas troncales (T101, T102, T103). Horario extendido ~21:30. */
 public class RutaTroncal extends Ruta {
 
-    public RutaTroncal(String nombre, int inicio, int fin, ArrayList<String> paradas) {
-        super(nombre, inicio, fin, paradas);
+    public RutaTroncal(String nombre, int inicio, int fin, ArrayList<String> paradas, ArrayList<Integer> pesosTramos) {
+        super(nombre, inicio, fin, paradas, pesosTramos);
     }
 
-    @Override public String getTipo() { return "Troncal"; }
+    @Override
+    public String getTipo() { return "Troncal"; }
 
     @Override
     public boolean calcularDisponibilidad(int hora) {
@@ -20,7 +21,8 @@ public class RutaTroncal extends Ruta {
 
     @Override
     public String obtenerInstrucciones(String origen, String destino) {
-        int mins = (getListadoParadas().size() - 1) * 6;  // Aqui asumimos que cada tramo de un bus troncal se toma 6 minutos
+        int mins = 0;
+        for (int peso : getPesosTramos()) mins += peso; // suma de tiempos reales por tramo
         return "RUTA: " + getNombreRuta() + " [TRONCAL]\n"
                 + "Recorrido : " + String.join(" -> ", getListadoParadas()) + "\n"
                 + "Aborde en : Estacion " + origen + "\n"
