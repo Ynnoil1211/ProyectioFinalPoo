@@ -4,7 +4,7 @@ Troncal;T100E;6;20;Patio Portal,Madre Bernarda,La Castellana,Cuatro Vientos,Mari
 Pesos;10,10,10,10,10,10
 Troncal;T101;5;22;Patio Portal,Madre Bernarda,La Castellana,Los Ejecutivos,Cuatro Vientos,España,El Prado,Bazurto,La Popa,Chambacú,Centro,La Bodeguita;Centro
 Pesos;6,6,6,6,6,5,5,5,5,5,5
-Troncal;T102;5;21;Patio Portal,Madre Bernarda,Villa Olímpica,República del Líbano,María Auxiliadora,El Prado,Bazurto,Chambacú,Centro,Crespo;Crespo
+Troncal;T102;5;21;Patio Portal,Madre Bernarda,Villa Olímpica,República del Líbano,Maria Auxiliadora,El Prado,Bazurto,Chambacú,Centro,Crespo;Crespo
 Pesos;4,4,3,3,3,3,3,3,62
 Troncal;T103;5;21;Patio Portal,Madre Bernarda,La Castellana,Los Ejecutivos,Cuatro Vientos,España,Bazurto,La Popa,Chambacú,La Bodeguita,Bocagrande;Bocagrande
 Pesos;5,5,5,5,4,4,4,4,4,36
@@ -22,7 +22,7 @@ Troncal;X106;5;21;Variante,Madre Bernarda,La Castellana,Cuatro Vientos,Bazurto,D
 Pesos;15,4,6,8,3,3,3,3,4
 Alimentadora;A101;5;22;Ciudad Jardín,Patio Portal;Ciudad Jardín
 Pesos;10
-Alimentadora;A102;5;22;Patio Portal,Universidad Tecnológica;Universidad Tecnológica
+Alimentadora;A102;5;22;Patio Portal,UTB;UTB
 Pesos;15
 Alimentadora;A103;5;22;Mandela,San Fernando,Santa Lucía;Mandela
 Pesos;15,10
@@ -44,7 +44,7 @@ Alimentadora;A118;5;22;Patio Portal,Ciudadela de la Paz;Ciudadela de la Paz
 Pesos;15
 Alimentadora;C001;5;21;Ciudadela 2000,Manga,Centro;Ciudadela 2000
 Pesos;25,15
-Alimentadora;C016;5;21;Patio Portal,Terminal de Transporte;Terminal de Transporte
+Alimentadora;C016;5;21;Patio Portal,Terminal de Transportes;Terminal de Transportes
 Pesos;15
 Alimentadora;C017;5;21;La Bodeguita,Zona Norte;Zona Norte
 Pesos;25
