@@ -1,34 +1,37 @@
 # rutas.txt | Formato: Tipo;Nombre;HInicio;HFin;Paradas[;Barrio]
-# Pesos;t1,t2,t3... (Tiempos en minutos para cada tramo)
-Troncal;T100E;6;20;Patio Portal,Madre Bernarda,La Castellana,Cuatro Vientos,Maria Auxiliadora,Centro,La Bodeguita;Centro
-Pesos;10,10,10,10,10,10
-Troncal;T101;5;22;Patio Portal,Madre Bernarda,La Castellana,Los Ejecutivos,Cuatro Vientos,España,El Prado,Bazurto,La Popa,Chambacú,Centro,La Bodeguita;Centro
-Pesos;6,6,6,6,6,5,5,5,5,5,5
-Troncal;T102;5;21;Patio Portal,Madre Bernarda,Villa Olímpica,República del Líbano,Maria Auxiliadora,El Prado,Bazurto,Chambacú,Centro,Crespo;Crespo
-Pesos;4,4,3,3,3,3,3,3,62
-Troncal;T103;5;21;Patio Portal,Madre Bernarda,La Castellana,Los Ejecutivos,Cuatro Vientos,España,Bazurto,La Popa,Chambacú,La Bodeguita,Bocagrande;Bocagrande
-Pesos;5,5,5,5,4,4,4,4,4,36
-Troncal;X101;5;21;San José de los Campanos,13 de Junio,Cuatro Vientos,Rep. del Líbano,España,El Prado,Bazurto,Delicias,La Popa,Lo Amador,Chambacú,Centro;San José de los Campanos
-Pesos;20,12,3,3,4,3,3,3,3,3,4
-Troncal;X102;5;21;Patio Portal,Madre Bernarda,Bosque,Bazurto,Delicias,La Popa,Lo Amador,Chambacú,Centro;Bosque
-Pesos;3,15,15,3,3,3,3,4
-Troncal;X103;5;21;Patio Portal,Madre Bernarda,Consulado,Bazurto,Delicias,La Popa,Lo Amador,Chambacú,Centro;Consulado
-Pesos;3,10,15,3,3,3,3,4
-Troncal;X104;5;21;Terminal de Transportes,Av. Pedro Romero,Bazurto,Delicias,La Popa,Lo Amador,Chambacú,Centro;Terminal de Transportes
-Pesos;10,25,3,3,3,3,4
-Troncal;X105;5;21;Ciudadela 2000,Crisanto Luque,Centro,La Bodeguita,Bocagrande;Ciudadela 2000
-Pesos;15,20,3,15
-Troncal;X106;5;21;Variante,Madre Bernarda,La Castellana,Cuatro Vientos,Bazurto,Delicias,La Popa,Lo Amador,Chambacú,Centro;Variante
-Pesos;15,4,6,8,3,3,3,3,4
-Alimentadora;A101;5;22;Ciudad Jardín,Patio Portal;Ciudad Jardín
+Troncal;T100E;6;20;Portal,La Bodeguita
+Pesos;60
+Troncal;T101;5;22;Portal,Ejecutivos,Bazurto,Chambacú,La Bodeguita
+Pesos;18,22,10,10
+Troncal;T102;5;21;Portal,Bazurto,Chambacú,Crespo
+Pesos;20,3,65
+Troncal;T103;5;21;Portal,Ejecutivos,Bazurto,Chambacú,La Bodeguita,Bocagrande
+Pesos;15,13,8,4,36
+Troncal;X101;5;21;Zaragocilla,Bazurto,Chambacú
+Pesos;15,12
+Troncal;X102;5;21;Portal,Bazurto,Chambacú
+Pesos;33,12
+Troncal;X103;5;21;Portal,Bazurto,Chambacú
+Pesos;28,12
+Troncal;X104;5;21;Olaya,Bazurto,Chambacú
+Pesos;15,12
+Troncal;X105;5;21;San Fernando,La Bodeguita,Bocagrande
+Pesos;15,15
+Troncal;X106;5;21;Pie de la Popa,Bazurto,Chambacú
+Pesos;15,12
+Alimentadora;A101;5;22;Olaya,Portal;Olaya
 Pesos;10
-Alimentadora;A107;5;22;Blas de Lezo,Santa Lucía;Blas de Lezo
+Alimentadora;A107;5;22;San Fernando,Zaragocilla;Zaragocilla
 Pesos;12
-Alimentadora;C001;5;21;Ciudadela 2000,Manga,Centro;Ciudadela 2000
-Pesos;25,15
-Alimentadora;C016;5;21;Patio Portal,Terminal de Transportes;Terminal de Transportes
+Alimentadora;C001;5;21;Pie de la Popa,Manga,La Bodeguita;Manga
+Pesos;15,10
+Alimentadora;C016;5;21;Patio Portal,San Fernando;San Fernando
 Pesos;15
-Alimentadora;C017;5;21;La Bodeguita,Zona Norte;Zona Norte
-Pesos;25
-Alimentadora;C018;5;21;La Bodeguita,Torices;Torices
+Alimentadora;C017;5;21;La Bodeguita,Marbella,Crespo;Crespo
+Pesos;10,15
+Alimentadora;C018;5;21;La Bodeguita,Marbella;Marbella
 Pesos;15
+Alimentadora;CP7;6;1;Zaragocilla,Pie de la Popa;Zaragocilla
+Pesos;2
+Troncal;CP8;5;9;Patio Portal,Nelson Mandela
+Pesos;2

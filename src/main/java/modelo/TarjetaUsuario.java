@@ -3,6 +3,7 @@ package modelo;
 // Integrantes: Lionny Lin - 0222510050 & Samuel Campo - 0222510057
 // Universidad de Cartagena - POO 2026-1
 
+import controlador.GestorTarjetas;
 import excepciones.SaldoInsuficienteException;
 import java.io.*;
 import java.util.ArrayList;
@@ -13,14 +14,12 @@ import java.util.ArrayList;
 public class TarjetaUsuario {
 
     private String numeroTarjeta;
-    private String titular;
     private double saldo;
     private ArrayList<String> movimientos;
     public static final double TARIFA = 3900.0;
 
-    public TarjetaUsuario(String numeroTarjeta, String titular, double saldo) {
+    public TarjetaUsuario(String numeroTarjeta, double saldo) {
         this.numeroTarjeta = numeroTarjeta;
-        this.titular = titular;
         this.saldo = saldo;
         this.movimientos = new ArrayList<>();
     }
@@ -47,21 +46,19 @@ public class TarjetaUsuario {
     }
     /** Serializa a CSV: NumeroTarjeta;Titular;Saldo */
     public String toCSV() {
-        return numeroTarjeta + ";" + titular + ";" + String.format("%.0f", saldo);
+        return numeroTarjeta + ";" + String.format("%.0f", saldo);
     }
 
     // ── Getters & Setters ───────────────────────────────────────────────────
 
     public String getNumeroTarjeta() { return numeroTarjeta; }
     public void setNumeroTarjeta(String v) { this.numeroTarjeta = v; }
-    public String getTitular() { return titular; }
-    public void setTitular(String v) { this.titular = v; }
     public double getSaldo() { return saldo; }
     public void setSaldo(double v) { this.saldo = v; }
     public ArrayList<String> getMovimientos() { return movimientos; }
 
     @Override
     public String toString() {
-        return numeroTarjeta + " | " + titular + " | $" + String.format("%.0f", saldo);
+        return numeroTarjeta + " | $" + String.format("%.0f", saldo);
     }
 }

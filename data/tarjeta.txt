@@ -1,13 +1,25 @@
-Titular:Usuario
-Numero:0000000000007743
-Saldo:5200.0
+ID:TC-0001
+Saldo:265000.0
 ---Movimientos---
-+ $10000 (Recarga)
-- $3900 (Viaje)
-- $3900 (Viaje)
-- $3900 (Viaje)
-+ $10000 (Recarga)
-- $3900 (Viaje)
-- $3900 (Viaje)
-- $3900 (Viaje)
-- $3900 (Viaje)
++ $20000  (Recarga)
++ $20000  (Recarga)
++ $20000  (Recarga)
++ $20000  (Recarga)
++ $50000  (Recarga)
+
+ID:TC-0002
+Saldo:8500.0
+---Movimientos---
+
+ID:TC-0003
+Saldo:372000.0
+---Movimientos---
+
+ID:TC-0004
+Saldo:12000.0
+---Movimientos---
+
+ID:12
+Saldo:5.555555555555556E21
+---Movimientos---
+

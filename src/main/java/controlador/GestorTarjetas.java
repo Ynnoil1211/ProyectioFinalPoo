@@ -29,6 +29,7 @@ public class GestorTarjetas {
 
     private ArrayList<TarjetaUsuario> tarjetas;
     private static final String ARCHIVO = "data/tarjetas.txt";
+    private static final String MOVIMIENTOS_ARCHIVO = "data/tarjeta.txt";
 
     public GestorTarjetas() {
         this.tarjetas = new ArrayList<>();
@@ -67,6 +68,7 @@ public class GestorTarjetas {
         // llamar al metodo para recargar
         tarjeta.recargar(monto);
         guardarEnArchivo();
+        guardarMovimientosEnArchivo();
     }
 
 
@@ -82,29 +84,97 @@ public class GestorTarjetas {
         }
         if (found) {
             guardarEnArchivo();
+            guardarMovimientosEnArchivo();
         }
         return found;
     }
+    public void guardarMovimientosEnArchivo() {
+        new File("data").mkdirs();  //mkdirs() crea la carpeta "data" en caso de que no exista
+        // Try with resource para cierre automatico, y FileWriter(ruta, false) para sobreescritura forzosa
+        try (PrintWriter pw = new PrintWriter(new FileWriter(MOVIMIENTOS_ARCHIVO, false))) {
+
+            for (TarjetaUsuario t : tarjetas) {
+                pw.println("ID:" + t.getNumeroTarjeta());
+                pw.println("Saldo:" + t.getSaldo());
+                pw.println("---Movimientos---");
+
+                // Imprimimos cada movimiento de la tarjeta
+                for (String mov : t.getMovimientos()) {
+                    pw.println(mov);
+                }
+                pw.println(); // Salto de linea vacio para separar una tarjeta de otra
+            }
+
+        } catch (IOException e) {
+            System.err.println("Error guardando movimientos: " + e.getMessage());
+        }
+    }
+
+    public ArrayList<String> obtenerMovimientosPorId(String idTarjeta) {
+        ArrayList<String> movimientosEncontrados = new ArrayList<>();
+        File f = new File(MOVIMIENTOS_ARCHIVO);
+        try {
+            if (!f.exists()) {
+                throw new IOException("El archivo de movimientos no existe."); // Lanzamos IOException en caso de fallo en carga de archivo.
+            }
+            try (BufferedReader br = new BufferedReader(new FileReader(f))) {  // Aqui usamos un Try-With-Resources para cerrar automaticamente el archivo.
+                String linea;
+                boolean leyendoMovimientos = false;
+                boolean esTarjetaCorrecta = false;
+
+                while ((linea = br.readLine()) != null) {
+                    linea = linea.trim();
+
+                    if (linea.startsWith("ID:")) {
+                        leyendoMovimientos = false;
+                        String num = linea.substring(3).trim(); // Cortamos "Numero:"
+                        if (num.equals(idTarjeta)) {
+                            esTarjetaCorrecta = true;
+                        } else {
+                            esTarjetaCorrecta = false;
+                        }
+                    } else if (linea.startsWith("---Movimientos---") && esTarjetaCorrecta) {
+                        leyendoMovimientos = true;
+                    } else if (leyendoMovimientos) {
+                        if (linea.isEmpty()) {
+                            break; // Si encuentra una linea vacia, se asume que termino el bloque de la tarjeta
+                        }
+                        movimientosEncontrados.add(linea);
+                    }
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("Error cargando movimientos: " + e.getMessage());
+        }
+        return movimientosEncontrados;
+    }
     // ── Persistencia ────────────────────────────────────────────────────────
+
     public void cargarDesdeArchivo() {
         tarjetas.clear();
         File f = new File(ARCHIVO);
         try {
             if (!f.exists()) {
-                throw new IOException("El archivo de tarjetas no existe."); // Lanzamos IOException en caso de fallo en carga de archivo.
+                throw new IOException("El archivo de tarjetas no existe.");
             }
-            try (BufferedReader br = new BufferedReader(new FileReader(f))) {  // Aqui usamos un Try-With-Resources para cerrar automaticamente el archivo.
+            try (BufferedReader br = new BufferedReader(new FileReader(f))) {
                 String linea;
                 while ((linea = br.readLine()) != null) {
-                    linea = linea.trim(); // Eliminamos espacio en blanco
+                    linea = linea.trim();
 
-                    if (linea.isEmpty() || linea.startsWith("#")) continue;  // Ignoramos lineas vacias y '#' que indica un comentario
+                    if (linea.isEmpty() || linea.startsWith("#")) continue;
                     String[] p = linea.split(";");
-                    if (p.length < 3) continue;   // El parsing se hace usando ';' como separador, en caso de ser menor que 3, se asume que hubo error y se descarta.
-                    String id = p[0].trim();  // Primer dato (Codigo de la tarjeta)
-                    String titular = p[1].trim();  // Segundo dato (Nombre del titular)
-                    double saldo = Double.parseDouble(p[2].trim());  // Tercer dato (Saldo disponible)
-                    tarjetas.add(new TarjetaUsuario(id, titular, saldo));   // Procesar Tarjeta y agregar a la lista
+                    if (p.length < 2) continue; // Cambiado a 2 parámetros (id y saldo)
+
+                    String id = p[0].trim();
+                    double saldo = Double.parseDouble(p[1].trim());
+
+                    TarjetaUsuario nuevaTarjeta = new TarjetaUsuario(id, saldo);
+
+                    // SOLUCIÓN AL STACKOVERFLOW: El gestor le asigna los movimientos tras crearla
+                    nuevaTarjeta.getMovimientos().addAll(obtenerMovimientosPorId(id));
+
+                    tarjetas.add(nuevaTarjeta);
                 }
             }
         } catch (IOException | NumberFormatException e) {
@@ -113,13 +183,11 @@ public class GestorTarjetas {
     }
 
     public void guardarEnArchivo() {
-        new File("data").mkdirs();  //mkdirs() crea la carpeta "data" en caso de que no exista
-        // Try with resource para cierre automatico, y FileWriter(ruta, false) para sobreescritura forzosa
+        new File("data").mkdirs();
         try (PrintWriter pw = new PrintWriter(new FileWriter(ARCHIVO, false))) {
-            pw.println("# tarjetas.txt | NumeroTarjeta;Titular;Saldo"); // La primera linea
+            pw.println("# tarjetas.txt | NumeroTarjeta;Saldo"); // Cabecera sin Titular
             for (TarjetaUsuario t : tarjetas)
-                pw.println(t.toCSV());  // Guardar tarjeta en formato separado por punto y coma
-            // Ejemplo de salida esperada: 12345678;Estudiante;15000.0
+                pw.println(t.toCSV());
         } catch (IOException e) {
             System.err.println("Error guardando tarjetas: " + e.getMessage());
         }
