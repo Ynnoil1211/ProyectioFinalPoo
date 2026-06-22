@@ -31,7 +31,11 @@ Alimentadora;C017;5;21;La Bodeguita,Marbella,Crespo;Crespo
 Pesos;10,15
 Alimentadora;C018;5;21;La Bodeguita,Marbella;Marbella
 Pesos;15
-Alimentadora;CP7;6;1;Zaragocilla,Pie de la Popa;Zaragocilla
-Pesos;2
-Troncal;CP8;5;9;Patio Portal,Nelson Mandela
-Pesos;2
+Alimentadora;test;5;20;La Bodeguita,Portal;Portal
+Pesos;20
+Alimentadora;test2;9;23;San Fernando,Nelson Mandela,Olaya;Olaya
+Pesos;10,10
+Alimentadora;test1;9;23;Nelson Mandela,Portal;Portal
+Pesos;5
+Alimentadora;test3;0;23;Manga, Bocagrande;Manga
+Pesos;100

@@ -1,10 +1,12 @@
 ID:TC-0001
-Saldo:265000.0
+Saldo:320000.0
 ---Movimientos---
 + $20000  (Recarga)
 + $20000  (Recarga)
 + $20000  (Recarga)
 + $20000  (Recarga)
++ $50000  (Recarga)
++ $5000  (Recarga)
 + $50000  (Recarga)
 
 ID:TC-0002
@@ -12,14 +14,19 @@ Saldo:8500.0
 ---Movimientos---
 
 ID:TC-0003
-Saldo:372000.0
+Saldo:422000.0
 ---Movimientos---
++ $50000  (Recarga)
 
 ID:TC-0004
 Saldo:12000.0
 ---Movimientos---
 
-ID:12
-Saldo:5.555555555555556E21
+ID:0001
+Saldo:5000.0
+---Movimientos---
+
+ID:23
+Saldo:20000.0
 ---Movimientos---
 

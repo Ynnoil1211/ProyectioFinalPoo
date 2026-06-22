@@ -80,6 +80,7 @@ public class GestorRutas {
         if (hora < 4 || hora >= 23)
             throw new FueraDeServicioException(hora);
 
+        cargarDesdeArchivo();
         List<String> camino = this.algoritmo.calcularRuta(this.grafo, origen, destino, hora);
 
         if (camino.isEmpty())

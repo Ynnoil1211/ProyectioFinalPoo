@@ -23,11 +23,19 @@ public class Interfaz extends javax.swing.JFrame {
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(Interfaz.class.getName());
 
     private TarjetaUsuario tarjetaActual;
+    private GestorRutas gestorRutas = new GestorRutas();
+    private GestorTarjetas gestorTarjetas = new GestorTarjetas();
+    private GestorAdmins gestorAdmins = new GestorAdmins();
     /**
      * Creates new form Interfaz
      */
     public Interfaz() {
         initComponents();
+        // Bug 1 fix: jButton23 ("Limpiar Selección") no tenía ActionListener
+        jButton23.addActionListener(this::jButton23ActionPerformed);
+        // Bug 3 fix: configurar el spinner con rango 0-23 y valor inicial de la hora actual
+        jSpinner1.setModel(new javax.swing.SpinnerNumberModel(
+                java.time.LocalTime.now().getHour(), 0, 23, 1));
     }
 
     /**
@@ -160,17 +168,17 @@ public class Interfaz extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        jTextField10.setBackground(new java.awt.Color(51, 0, 153));
+        jTextField10.setBackground(new java.awt.Color(186, 183, 140));
         jTextField10.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        jTextField10.setForeground(new java.awt.Color(255, 255, 255));
+        jTextField10.setForeground(new java.awt.Color(0, 0, 0));
         jTextField10.setText("KIOSCO INFORMATIVO - TRANSMETRO");
 
         jPanel13.setBorder(javax.swing.BorderFactory.createTitledBorder("Consultar tarjeta"));
 
         jLabel1.setText("ID de tarjeta");
 
-        botonBuscarIdTarjeta.setBackground(new java.awt.Color(0, 51, 153));
-        botonBuscarIdTarjeta.setForeground(new java.awt.Color(255, 255, 255));
+        botonBuscarIdTarjeta.setBackground(new java.awt.Color(186, 183, 140));
+        botonBuscarIdTarjeta.setForeground(new java.awt.Color(0, 0, 0));
         botonBuscarIdTarjeta.setText("Consultar");
         botonBuscarIdTarjeta.addActionListener(this::botonBuscarIdTarjetaActionPerformed);
 
@@ -205,19 +213,19 @@ public class Interfaz extends javax.swing.JFrame {
                     .addContainerGap(23, Short.MAX_VALUE)))
         );
 
-        jPanel4.setBackground(new java.awt.Color(0, 51, 153));
+        jPanel4.setBackground(new java.awt.Color(186, 183, 140));
 
         titularTarjetaTexto.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        titularTarjetaTexto.setForeground(new java.awt.Color(204, 204, 204));
+        titularTarjetaTexto.setForeground(new java.awt.Color(0, 0, 0));
         titularTarjetaTexto.setText("Tarifa por viaje: $3.900");
         titularTarjetaTexto.setToolTipText("");
 
         saldoTarjetaTexto.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        saldoTarjetaTexto.setForeground(new java.awt.Color(0, 204, 153));
+        saldoTarjetaTexto.setForeground(new java.awt.Color(0, 0, 0));
         saldoTarjetaTexto.setText("Saldo: --");
 
         jLabel4.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jLabel4.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel4.setForeground(new java.awt.Color(0, 0, 0));
         jLabel4.setText("Sin tarjeta consultada");
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
@@ -243,23 +251,23 @@ public class Interfaz extends javax.swing.JFrame {
                 .addComponent(titularTarjetaTexto, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
-        botonAgregarSaldo4.setBackground(new java.awt.Color(255, 102, 0));
-        botonAgregarSaldo4.setForeground(new java.awt.Color(255, 255, 255));
+        botonAgregarSaldo4.setBackground(new java.awt.Color(190, 140, 107));
+        botonAgregarSaldo4.setForeground(new java.awt.Color(0, 0, 0));
         botonAgregarSaldo4.setText("+50.000");
         botonAgregarSaldo4.addActionListener(this::botonAgregarSaldo4ActionPerformed);
 
-        botonAgregarSaldo3.setBackground(new java.awt.Color(255, 102, 0));
-        botonAgregarSaldo3.setForeground(new java.awt.Color(255, 255, 255));
+        botonAgregarSaldo3.setBackground(new java.awt.Color(190, 140, 107));
+        botonAgregarSaldo3.setForeground(new java.awt.Color(0, 0, 0));
         botonAgregarSaldo3.setText("+20.000");
         botonAgregarSaldo3.addActionListener(this::botonAgregarSaldo3ActionPerformed);
 
-        botonAgregarSaldo2.setBackground(new java.awt.Color(255, 102, 0));
-        botonAgregarSaldo2.setForeground(new java.awt.Color(255, 255, 255));
+        botonAgregarSaldo2.setBackground(new java.awt.Color(190, 140, 107));
+        botonAgregarSaldo2.setForeground(new java.awt.Color(0, 0, 0));
         botonAgregarSaldo2.setText("+10.000");
         botonAgregarSaldo2.addActionListener(this::botonAgregarSaldo2ActionPerformed);
 
-        botonAgregarSaldo1.setBackground(new java.awt.Color(255, 102, 0));
-        botonAgregarSaldo1.setForeground(new java.awt.Color(255, 255, 255));
+        botonAgregarSaldo1.setBackground(new java.awt.Color(190, 140, 107));
+        botonAgregarSaldo1.setForeground(new java.awt.Color(0, 0, 0));
         botonAgregarSaldo1.setText("+5.000");
         botonAgregarSaldo1.addActionListener(this::botonAgregarSaldo1ActionPerformed);
 
@@ -306,7 +314,7 @@ public class Interfaz extends javax.swing.JFrame {
 
         secciones.addTab("Usuario", seccionUsuario);
 
-        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel1.setBackground(new java.awt.Color(186, 183, 140));
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jLabel2.setText("ID (Admin):");
@@ -317,9 +325,9 @@ public class Interfaz extends javax.swing.JFrame {
         jLabel14.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jLabel14.setText("Contraseña:");
 
-        botonEntrar.setBackground(new java.awt.Color(0, 51, 153));
+        botonEntrar.setBackground(new java.awt.Color(186, 183, 140));
         botonEntrar.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        botonEntrar.setForeground(new java.awt.Color(255, 255, 255));
+        botonEntrar.setForeground(new java.awt.Color(0, 0, 0));
         botonEntrar.setText("Entrar");
         botonEntrar.addActionListener(this::botonEntrarActionPerformed);
 
@@ -507,7 +515,7 @@ public class Interfaz extends javax.swing.JFrame {
                     .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(guardarRutaBoton)
                         .addComponent(eliminarRutaBoton)))
-                .addContainerGap(277, Short.MAX_VALUE))
+                .addContainerGap(91, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout rutasSeccionLayout = new javax.swing.GroupLayout(rutasSeccion);
@@ -534,8 +542,8 @@ public class Interfaz extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jLabel6)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 370, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
@@ -563,21 +571,21 @@ public class Interfaz extends javax.swing.JFrame {
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel8Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane3)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 907, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel8Layout.setVerticalGroup(
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel8Layout.createSequentialGroup()
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 8, Short.MAX_VALUE))
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 365, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
 
         jPanel9.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Crear / Eliminar tarjeta", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 1, 12))); // NOI18N
 
         jLabel13.setText("ID:");
 
-        jLabel15.setText("Saldo inicial");
+        jLabel15.setText("Saldo inicial:");
 
         crearTarjetaBoton.setBackground(new java.awt.Color(0, 51, 153));
         crearTarjetaBoton.setForeground(new java.awt.Color(255, 255, 255));
@@ -597,18 +605,19 @@ public class Interfaz extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel9Layout.createSequentialGroup()
-                        .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(idTarjetaEntrada, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel9Layout.createSequentialGroup()
-                        .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(saldoEntrada, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel9Layout.createSequentialGroup()
                         .addComponent(crearTarjetaBoton, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(eliminarTarjetaBoton, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(661, Short.MAX_VALUE))
+                        .addComponent(eliminarTarjetaBoton, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addGroup(jPanel9Layout.createSequentialGroup()
+                            .addComponent(jLabel15, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGap(31, 31, 31)
+                            .addComponent(saldoEntrada, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(jPanel9Layout.createSequentialGroup()
+                            .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(86, 86, 86)
+                            .addComponent(idTarjetaEntrada, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(581, Short.MAX_VALUE))
         );
         jPanel9Layout.setVerticalGroup(
             jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -632,21 +641,21 @@ public class Interfaz extends javax.swing.JFrame {
         tarjetasSeccion.setLayout(tarjetasSeccionLayout);
         tarjetasSeccionLayout.setHorizontalGroup(
             tarjetasSeccionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, tarjetasSeccionLayout.createSequentialGroup()
+            .addGroup(tarjetasSeccionLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(tarjetasSeccionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jPanel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(tarjetasSeccionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel8, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel9, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         tarjetasSeccionLayout.setVerticalGroup(
             tarjetasSeccionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(tarjetasSeccionLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, 195, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 190, Short.MAX_VALUE)
                 .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(261, Short.MAX_VALUE))
+                .addGap(83, 83, 83))
         );
 
         administradorSecciones.addTab("Gestion de Tarjetas", tarjetasSeccion);
@@ -655,14 +664,15 @@ public class Interfaz extends javax.swing.JFrame {
         jLabel5.setForeground(new java.awt.Color(0, 51, 255));
         jLabel5.setText("Panel de administrador");
 
-        jTextField11.setBackground(new java.awt.Color(51, 0, 153));
+        jTextField11.setBackground(new java.awt.Color(186, 183, 140));
         jTextField11.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        jTextField11.setForeground(new java.awt.Color(255, 255, 255));
+        jTextField11.setForeground(new java.awt.Color(0, 0, 0));
         jTextField11.setText("KIOSCO INFORMATIVO - TRANSCARIBE");
+        jTextField11.addActionListener(this::jTextField11ActionPerformed);
 
-        jTextField12.setBackground(new java.awt.Color(51, 0, 153));
+        jTextField12.setBackground(new java.awt.Color(186, 183, 140));
         jTextField12.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        jTextField12.setForeground(new java.awt.Color(255, 255, 255));
+        jTextField12.setForeground(new java.awt.Color(0, 0, 0));
         jTextField12.setText("KIOSCO INFORMATIVO - TRANSMETRO");
 
         javax.swing.GroupLayout seccionAdministradorLayout = new javax.swing.GroupLayout(seccionAdministrador);
@@ -702,9 +712,9 @@ public class Interfaz extends javax.swing.JFrame {
 
         secciones.addTab("Administrador", seccionAdministrador);
 
-        jTextField13.setBackground(new java.awt.Color(51, 0, 153));
+        jTextField13.setBackground(new java.awt.Color(186, 183, 140));
         jTextField13.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        jTextField13.setForeground(new java.awt.Color(255, 255, 255));
+        jTextField13.setForeground(new java.awt.Color(0, 0, 0));
         jTextField13.setText("KIOSCO INFORMATIVO - TRANSMETRO");
 
         crespo.setText("Crespo");
@@ -863,14 +873,14 @@ public class Interfaz extends javax.swing.JFrame {
                         .addComponent(nelsonMandela, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(159, 159, 159))))
             .addGroup(seccionMapaLayout.createSequentialGroup()
-                .addGap(17, 17, 17)
-                .addComponent(bocagrande, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGroup(seccionMapaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(seccionMapaLayout.createSequentialGroup()
+                        .addGap(17, 17, 17)
+                        .addComponent(bocagrande, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(178, 178, 178)
                         .addComponent(filler1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(seccionMapaLayout.createSequentialGroup()
-                        .addGap(56, 56, 56)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, seccionMapaLayout.createSequentialGroup()
+                        .addContainerGap()
                         .addComponent(manga, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGroup(seccionMapaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(seccionMapaLayout.createSequentialGroup()
@@ -933,9 +943,9 @@ public class Interfaz extends javax.swing.JFrame {
                                 .addComponent(chambacu, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(filler1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGap(56, 56, 56)
                                 .addComponent(manga, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(108, 108, 108)))
+                                .addGap(58, 58, 58)))
                         .addGroup(seccionMapaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(seccionMapaLayout.createSequentialGroup()
                                 .addGroup(seccionMapaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1000,10 +1010,9 @@ public class Interfaz extends javax.swing.JFrame {
 
     private void seccionesStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_seccionesStateChanged
         // TODO add your handling code here:
-        mostrarGrafo();
         mostrarTablaRutas();
         mostrarTablaTarjetas();
-
+        mostrarGrafo();
 
         if (administradorSecciones.getTabCount() > 0 && administradorSecciones.getSelectedIndex() != -1)
             administradorSecciones.setSelectedIndex(0);
@@ -1017,7 +1026,6 @@ public class Interfaz extends javax.swing.JFrame {
     private void guardarRutaBotonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_guardarRutaBotonActionPerformed
         // TODO add your handling code here:
         try{
-            GestorRutas gestorRutas = new GestorRutas();
             Ruta rutaCreada;
 
             String entradaNombre = nombreRutaEntrada.getText();
@@ -1072,7 +1080,6 @@ public class Interfaz extends javax.swing.JFrame {
         // TODO add your handling code here:
 
         try{
-            GestorRutas gestorRutas = new GestorRutas();
 
             String entradaNombre = nombreRutaEntrada.getText();
 
@@ -1107,8 +1114,7 @@ public class Interfaz extends javax.swing.JFrame {
 
             TarjetaUsuario tarjeta = new TarjetaUsuario(numero, saldoInicial);
 
-            GestorTarjetas gestor = new GestorTarjetas();
-            gestor.crearTarjeta(tarjeta);
+            gestorTarjetas.crearTarjeta(tarjeta);
 
             JOptionPane.showMessageDialog(null, "tarjeta creada con exito: " + numero, "Tarjeta creada", JOptionPane.DEFAULT_OPTION);
 
@@ -1136,9 +1142,7 @@ public class Interfaz extends javax.swing.JFrame {
             if(!existeTarjeta(numero))
                 throw new Exception("No existe ninguna tarjeta con el numero: " + numero);
 
-            GestorTarjetas gestor = new GestorTarjetas();
-
-            gestor.eliminarTarjeta(numero);
+            gestorTarjetas.eliminarTarjeta(numero);
 
             JOptionPane.showMessageDialog(null, "Tarjeta Eliminada Con Exito: " + numero, "Tarjeta Eliminada", JOptionPane.DEFAULT_OPTION);
 
@@ -1157,7 +1161,7 @@ public class Interfaz extends javax.swing.JFrame {
         // TODO add your handling code here:
 
         try{
-            GestorAdmins gestorAdmins = new GestorAdmins();
+
             String idAdmin = idAdminEntrada.getText();
             String claveAdmin = claveAdminEntrada.getText();
 
@@ -1266,8 +1270,11 @@ public class Interfaz extends javax.swing.JFrame {
         escogerEstacion("Nelson Mandela");
     }//GEN-LAST:event_nelsonMandelaActionPerformed
 
+    private void jTextField11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField11ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextField11ActionPerformed
+
     private boolean existeTarjeta(String numero){
-        GestorTarjetas gestorTarjetas = new GestorTarjetas();
 
         for (TarjetaUsuario tarjeta: gestorTarjetas.getTarjetas()){
             if(tarjeta.getNumeroTarjeta().equalsIgnoreCase(numero))
@@ -1277,7 +1284,7 @@ public class Interfaz extends javax.swing.JFrame {
     }
 
     private boolean existeRuta(String nombre){
-        GestorRutas gestorRutas = new GestorRutas();
+
         for(Ruta ruta: gestorRutas.getRutas()){
             if(ruta.getNombreRuta().equalsIgnoreCase(nombreRutaEntrada.getText()))
                 return true;
@@ -1331,8 +1338,8 @@ public class Interfaz extends javax.swing.JFrame {
     }
     private void mostrarInformacionTarjeta(TarjetaUsuario tarjeta){
         //titularTarjetaTexto.setText("Usuario: " + tarjeta.getTitular());
-        saldoTarjetaTexto.setText("Saldo: " + tarjeta.getSaldo());
-
+        jLabel4.setText("Tarjeta: " + tarjeta.getNumeroTarjeta());
+        saldoTarjetaTexto.setText("Saldo: $" + String.format("%.0f", tarjeta.getSaldo()));
         contenedorMovimientos.setText(tarjeta.getResumenMovimientos());
 
         // --- PRUEBA PARA LA CONSOLA ---
@@ -1340,7 +1347,7 @@ public class Interfaz extends javax.swing.JFrame {
         System.out.println("Cantidad de movimientos leidos: " + tarjetaActual.getMovimientos().size());
     }
     private TarjetaUsuario buscarTarjeta(String id){
-        GestorTarjetas gestorTarjetas = new GestorTarjetas();
+
         try{
             TarjetaUsuario tarjeta = gestorTarjetas.buscarPorNumero(id);
             return  tarjeta;
@@ -1356,7 +1363,7 @@ public class Interfaz extends javax.swing.JFrame {
 
     /*-------------------------------------Interfaz de administrador-------------------------------------------*/
     private void mostrarTablaRutas(){
-        GestorRutas gestorRutas = new GestorRutas();
+
         DefaultTableModel table = (DefaultTableModel)tablaRutas.getModel();
 
         table.setRowCount(0);
@@ -1374,7 +1381,7 @@ public class Interfaz extends javax.swing.JFrame {
         }
     }
     private void mostrarTablaTarjetas(){
-        GestorTarjetas gestorTarjetas = new GestorTarjetas();
+
 
         DefaultTableModel table = (DefaultTableModel) tablaTarjetas.getModel();
         table.setRowCount(0);
@@ -1392,8 +1399,6 @@ public class Interfaz extends javax.swing.JFrame {
 
 
     private void mostrarGrafo(){
-        GestorRutas gestorRutas = new GestorRutas();
-
         dibujarTodasLasRutas();
     }
     public void escogerEstacion(String nombreEstacion) {
@@ -1417,65 +1422,43 @@ public class Interfaz extends javax.swing.JFrame {
         }
     }
 
-    private void generarGuiaDeViaje(String origen, String destino) {
-        int horaSimulada = 12; // Hora base de simulación
+    private controlador.GestorRutas gestor = new controlador.GestorRutas();
 
-        try {
-            // DECLARACIÓN INTERNA: El gestor nace y muere dentro de esta función
-            controlador.GestorRutas gestor = new controlador.GestorRutas();
+private void generarGuiaDeViaje(String origen, String destino) {
+    int horaSimulada = 12; // Hora base de simulación
+    horaSimulada = (int) jSpinner1.getValue();
 
-            // Obtenemos el grafo directamente de la instancia local
-            grafo.GrafoRutas grafoSistema = gestor.getGrafo();
+    try {
+        // 1. Delegamos la búsqueda al controlador
+        java.util.List<String> camino = gestor.buscarRutaOptima(origen, destino, horaSimulada);
 
-            // Instanciamos el algoritmo de búsqueda de caminos mínimos
-            grafo.AlgoritmoDijkstra dijkstra = new grafo.AlgoritmoDijkstra();
+        // 2. Obtenemos el String formateado directamente del controlador y lo imprimimos
+        String instrucciones = gestor.generarInstrucciones(camino, horaSimulada);
+        contenedorGuia.setText(instrucciones);
 
-            // Calculamos la lista de estaciones del camino óptimo
-            java.util.List<String> camino = dijkstra.calcularRuta(grafoSistema, origen, destino, horaSimulada);
+        // 3. Registramos la consulta en el historial
+        modelo.RegistroConsulta historial = new modelo.RegistroConsulta(origen, destino, String.join(" -> ", camino), horaSimulada);
+        historial.registrar();
 
-            // Validación en caso de que no exista conexión
-            if (camino == null || camino.isEmpty()) {
-                contenedorGuia.setText("❌ No se encontró una ruta disponible entre '" + origen + "' y '" + destino + "' a las " + horaSimulada + ":00 h.\nVerifique los horarios de operación de las rutas.");
-                return;
-            }
-
-            // Construimos la salida visual en formato de guía detallada
-            StringBuilder sb = new StringBuilder();
-            sb.append("=========================================\n");
-            sb.append("       GUÍA DE RECORRIDO - TRANSCARIBE    \n");
-            sb.append("=========================================\n");
-            sb.append("🕒 Hora de la simulación: ").append(horaSimulada).append(":00 h\n");
-            sb.append("🛫 Estación Origen : ").append(origen).append("\n");
-            sb.append("🛬 Estación Destino: ").append(destino).append("\n");
-            sb.append("-----------------------------------------\n");
-            sb.append("🗺️ Pasos a seguir en el sistema:\n\n");
-
-            for (int i = 0; i < camino.size(); i++) {
-                if (i == 0) {
-                    sb.append("  [INICIO] -> ").append(camino.get(i)).append("\n");
-                } else if (i == camino.size() - 1) {
-                    sb.append("  [DESTINO] -> ").append(camino.get(i)).append("\n");
-                } else {
-                    sb.append("  • Transitar por: ").append(camino.get(i)).append("\n");
-                }
-            }
-
-            sb.append("\n-----------------------------------------\n");
-            sb.append("💳 Costo del viaje: $").append(String.format("%.0f", modelo.TarjetaUsuario.TARIFA)).append("\n");
-            sb.append("=========================================\n");
-
-            // Volcamos el texto exactamente en tu contenedor de destino
-            contenedorGuia.setText(sb.toString());
-
-            // Registramos la consulta en el archivo de historial
-            modelo.RegistroConsulta historial = new modelo.RegistroConsulta(origen, destino, String.join(" -> ", camino), horaSimulada);
-            historial.registrar();
-
-        } catch (Exception e) {
-            contenedorGuia.setText("Ocurrió un error al procesar el grafo de rutas:\n" + e.getMessage());
-        }
+    // 4. Manejo de excepciones personalizadas y activación de contingencia
+    } catch (excepciones.OrigenDestinoIdenticoException e) {
+        contenedorGuia.setText("Error: " + e.getMessage());
+    } catch (excepciones.FueraDeServicioException e) {
+        contenedorGuia.setText("Error: " + e.getMessage());
+    } catch (excepciones.RutaNoEncontradaException e) {
+        String contingencia = gestor.generarContingencia(destino);
+        contenedorGuia.setText("No se encontró ruta disponible.\n" + contingencia);
+    } catch (Exception e) {
+        contenedorGuia.setText("Ocurrió un error inesperado al procesar la ruta:\n" + e.getMessage());
     }
-
+}
+    private void jButton23ActionPerformed(java.awt.event.ActionEvent evt) {
+        estacionOrigen = null;
+        estacionDestino = null;
+        estacionOrigenTexto.setText("[Haga clic en el mapa]");
+        estacionDestinoTexto.setText("[Haga clic en el mapa]");
+        contenedorGuia.setText("");
+    }
 
     
     public static void main(String args[]) {
@@ -1641,31 +1624,36 @@ public class Interfaz extends javax.swing.JFrame {
         }
     }
     public void dibujarTodasLasRutas() {
+        
+        java.awt.Component[] componentes = seccionMapa.getComponents();
+        for (java.awt.Component c : componentes) {
+            if (c instanceof PanelMapaRutas) {
+                seccionMapa.remove(c);
+            }
+        }
+
+        seccionMapa.setLayout(null);
+
         PanelMapaRutas panelMapa = new PanelMapaRutas();
         panelMapa.setBounds(0, 0, seccionMapa.getWidth(), seccionMapa.getHeight());
         panelMapa.setOpaque(false);
 
-        GestorRutas gestor = new GestorRutas();
+        GestorRutas gestorLocal = new GestorRutas();
 
-        // CORRECCIÓN 1: Usamos directamente Ruta (el import de modelo.* ya lo cubre)
-        for (Ruta ruta : gestor.getRutas()) {
-
+        for (Ruta ruta : gestorLocal.getRutas()) {
             Color colorRuta;
             if (ruta.getTipo().equalsIgnoreCase("Troncal")) {
-                colorRuta = new Color(220, 20, 60); // Rojo Troncal
+                colorRuta = new Color(220, 20, 60);
             } else if (ruta.getTipo().equalsIgnoreCase("Alimentadora")) {
-                colorRuta = new Color(34, 139, 34); // Verde Alimentadora
+                colorRuta = new Color(34, 139, 34);
             } else {
-                colorRuta = Color.BLUE; // Otro color
+                colorRuta = Color.BLUE;
             }
 
-            // CORRECCIÓN 2: Usamos el método real getListadoParadas() que devuelve un ArrayList
             java.util.ArrayList<String> paradas = ruta.getListadoParadas();
-
             for (int i = 0; i < paradas.size() - 1; i++) {
-                JButton botonOrigen = obtenerBotonEstacion(paradas.get(i));
+                JButton botonOrigen  = obtenerBotonEstacion(paradas.get(i));
                 JButton botonDestino = obtenerBotonEstacion(paradas.get(i + 1));
-
                 if (botonOrigen != null && botonDestino != null) {
                     panelMapa.agregarTramo(botonOrigen, botonDestino, colorRuta);
                 }
@@ -1674,6 +1662,7 @@ public class Interfaz extends javax.swing.JFrame {
 
         seccionMapa.add(panelMapa);
 
+        // Ponemos los botones en primer plano y el panel de líneas al fondo
         for (java.awt.Component c : seccionMapa.getComponents()) {
             if (c instanceof JButton) {
                 seccionMapa.setComponentZOrder(c, 0);
@@ -1681,6 +1670,7 @@ public class Interfaz extends javax.swing.JFrame {
         }
         seccionMapa.setComponentZOrder(panelMapa, seccionMapa.getComponentCount() - 1);
 
+        seccionMapa.revalidate();
         seccionMapa.repaint();
     }
 }
