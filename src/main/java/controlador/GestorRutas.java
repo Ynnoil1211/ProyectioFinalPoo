@@ -27,7 +27,7 @@ public class GestorRutas {
 
     private ArrayList<Ruta> rutas;
     private GrafoRutas grafo;
-    private AlgoritmoDijkstra algoritmo;
+    private AlgoritmoRuta algoritmo; // aqui definimos el algoritmo que usaremos como cualquiera que implemente la interfaz AlgoritmoRuta
     //todos los datos se guardaran en la subcarpeta data/
     private static final String ARCHIVO_RUTAS = "data/rutas.txt";
         //En caso de ocurrir una RutaNoEncontradaException, se activara el plan de contingencia.

@@ -9,7 +9,8 @@ import java.util.*;
  * Encuentra el trayecto de menor tiempo entre dos estaciones,considerando únicamente las aristas disponibles a la hora indicada.
  * Complejidad: O((V + E) log V) con cola de prioridad.
  */
-public class AlgoritmoDijkstra {
+public class AlgoritmoDijkstra implements AlgoritmoRuta {
+    @Override
     public List<String> calcularRuta(GrafoRutas grafo, String origen, String destino, int hora) {
         String origenKey = origen.toUpperCase();
         String destinoKey = destino.toUpperCase();

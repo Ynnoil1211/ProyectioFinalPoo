@@ -11,7 +11,7 @@ import java.util.*;
  * Cada NodoEstacion es una parada física.
  * Cada AristaRuta es un tramo entre dos paradas consecutivas de una ruta.
  * GestorRutas construye este grafo a partir de la lista de rutas cargadas
- * desde archivo, y luego delega la búsqueda a la clase AlgoritmoDijkstra.
+ * desde archivo, y luego delega la búsqueda a un algortimo.
  */
 public class GrafoRutas {
 
