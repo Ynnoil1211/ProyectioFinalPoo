@@ -1,5 +1,5 @@
 # tarjetas.txt | NumeroTarjeta;Saldo
-TC-0001;320000
+TC-0001;330000
 TC-0002;8500
 TC-0003;422000
 TC-0004;12000

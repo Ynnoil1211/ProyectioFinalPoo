@@ -1405,13 +1405,13 @@ public class Interfaz extends javax.swing.JFrame {
         if (estacionOrigen == null) {
             // Primer clic: configuramos el punto de partida
             estacionOrigen = nombreEstacion;
-            estacionOrigenTexto.setText("📍 Origen seleccionado: " + estacionOrigen);
-            estacionDestinoTexto.setText("👉 Ahora seleccione el destino presionando otro nodo.");
+            estacionOrigenTexto.setText(estacionOrigen);
+            estacionDestinoTexto.setText("Ahora seleccione el destino presionando otro nodo.");
             contenedorGuia.setText(""); // Limpiamos la guía anterior para el nuevo viaje
         } else {
             // Segundo clic: configuramos el punto de llegada
             estacionDestino = nombreEstacion;
-            estacionDestinoTexto.setText("🏁 Destino seleccionado: " + estacionDestino);
+            estacionDestinoTexto.setText(estacionDestino);
 
             // Ejecutamos la búsqueda de la ruta y la impresión de la guía
             generarGuiaDeViaje(estacionOrigen, estacionDestino);
@@ -1422,7 +1422,6 @@ public class Interfaz extends javax.swing.JFrame {
         }
     }
 
-    private controlador.GestorRutas gestor = new controlador.GestorRutas();
 
 private void generarGuiaDeViaje(String origen, String destino) {
     int horaSimulada = 12; // Hora base de simulación
@@ -1430,10 +1429,10 @@ private void generarGuiaDeViaje(String origen, String destino) {
 
     try {
         // 1. Delegamos la búsqueda al controlador
-        java.util.List<String> camino = gestor.buscarRutaOptima(origen, destino, horaSimulada);
+        java.util.List<String> camino = gestorRutas.buscarRutaOptima(origen, destino, horaSimulada);
 
         // 2. Obtenemos el String formateado directamente del controlador y lo imprimimos
-        String instrucciones = gestor.generarInstrucciones(camino, horaSimulada);
+        String instrucciones = gestorRutas.generarInstrucciones(camino, horaSimulada);
         contenedorGuia.setText(instrucciones);
 
         // 3. Registramos la consulta en el historial
@@ -1446,7 +1445,7 @@ private void generarGuiaDeViaje(String origen, String destino) {
     } catch (excepciones.FueraDeServicioException e) {
         contenedorGuia.setText("Error: " + e.getMessage());
     } catch (excepciones.RutaNoEncontradaException e) {
-        String contingencia = gestor.generarContingencia(destino);
+        String contingencia = gestorRutas.generarContingencia(destino);
         contenedorGuia.setText("No se encontró ruta disponible.\n" + contingencia);
     } catch (Exception e) {
         contenedorGuia.setText("Ocurrió un error inesperado al procesar la ruta:\n" + e.getMessage());

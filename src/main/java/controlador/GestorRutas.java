@@ -126,49 +126,53 @@ public class GestorRutas {
             NodoEstacion nodo = this.grafo.getNodo(desde);
 
             if (nodo == null) continue;
-
+            AristaRuta mejorArista = null;
             for (AristaRuta arista : nodo.getConexiones()) {
                 if (arista.getDestino().equalsIgnoreCase(hasta) && arista.estaDisponible(hora)) {
-                    String nombreRutaActual = arista.getNombreRuta();
-                    boolean continuaMismoBus = nombreRutaActual.equalsIgnoreCase(rutaAnterior);
-                    int tiempoTramo = tiempoTotalViaje += arista.getPesoMinutos(); // sumamos el tiempo gastado en este viaje
-
-                    if (!continuaMismoBus) {
-                        rutasUsadas.add(nombreRutaActual); //nueva ruta
+                    if (mejorArista == null || arista.getPesoMinutos() < mejorArista.getPesoMinutos()) {
+                        mejorArista = arista;
                     }
+                }
+            }
+            if (mejorArista != null) {
+                String nombreRutaActual = mejorArista.getNombreRuta();
+                boolean continuaMismoBus = nombreRutaActual.equalsIgnoreCase(rutaAnterior);
 
-                    if (tarifasACobrar == 0) {
-                        tarifasACobrar = 1;
+                // NOTA: He corregido aquí también un bug matemático (ver el Bonus abajo)
+                int tiempoTramo = mejorArista.getPesoMinutos();
+                tiempoTotalViaje += tiempoTramo;
+
+                if (!continuaMismoBus) {
+                    rutasUsadas.add(nombreRutaActual); // nueva ruta
+                }
+
+                if (tarifasACobrar == 0) {
+                    tarifasACobrar = 1;
+                    minutosDesdeValidacion = tiempoTramo;
+                    transbordosEnVentana = 0;
+                    sentidoPorRutaEnVentana.clear();
+                    sentidoPorRutaEnVentana.put(nombreRutaActual, desde + "->" + hasta);
+                } else if (continuaMismoBus) {
+                    minutosDesdeValidacion += tiempoTramo;
+                } else {
+                    boolean dentroDeVentana = minutosDesdeValidacion <= VENTANA_MINUTOS;
+                    boolean cupoDisponible = transbordosEnVentana < MAX_TRANSBORDOS;
+                    String sentidoPrevio = sentidoPorRutaEnVentana.get(nombreRutaActual);
+                    boolean mismoSentido = sentidoPrevio == null || !sentidoPrevio.equals(hasta + "->" + desde);
+
+                    if (dentroDeVentana && cupoDisponible && mismoSentido) {
+                        transbordosEnVentana++;
+                        minutosDesdeValidacion += tiempoTramo;
+                        sentidoPorRutaEnVentana.putIfAbsent(nombreRutaActual, desde + "->" + hasta);
+                    } else {
+                        tarifasACobrar++;
                         minutosDesdeValidacion = tiempoTramo;
                         transbordosEnVentana = 0;
                         sentidoPorRutaEnVentana.clear();
                         sentidoPorRutaEnVentana.put(nombreRutaActual, desde + "->" + hasta);
-
-                    } else if (continuaMismoBus) {
-                        minutosDesdeValidacion += tiempoTramo;
-
-                    } else {
-                        boolean dentroDeVentana = minutosDesdeValidacion <= VENTANA_MINUTOS;
-                        boolean cupoDisponible  = transbordosEnVentana < MAX_TRANSBORDOS;
-                        String sentidoPrevio = sentidoPorRutaEnVentana.get(nombreRutaActual);
-                        boolean mismoSentido = sentidoPrevio == null || !sentidoPrevio.equals(hasta + "->" + desde);
-
-                        if (dentroDeVentana && cupoDisponible && mismoSentido) {
-                            transbordosEnVentana++;
-                            minutosDesdeValidacion += tiempoTramo;
-                            sentidoPorRutaEnVentana.putIfAbsent(nombreRutaActual, desde + "->" + hasta);
-                        } else {
-                            tarifasACobrar++;
-                            minutosDesdeValidacion = tiempoTramo;
-                            transbordosEnVentana = 0;
-                            sentidoPorRutaEnVentana.clear();
-                            sentidoPorRutaEnVentana.put(nombreRutaActual, desde + "->" + hasta);
-                        }
                     }
-
-                    rutaAnterior = nombreRutaActual;
-                    break;
                 }
+                rutaAnterior = nombreRutaActual;
             }
         }
 

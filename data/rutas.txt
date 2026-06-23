@@ -37,5 +37,7 @@ Alimentadora;test2;9;23;San Fernando,Nelson Mandela,Olaya;Olaya
 Pesos;10,10
 Alimentadora;test1;9;23;Nelson Mandela,Portal;Portal
 Pesos;5
-Alimentadora;test3;0;23;Manga, Bocagrande;Manga
+Alimentadora;test3;0;23;Manga,Bocagrande;Manga
 Pesos;100
+Troncal;testt4;6;23;Portal,Zaragocilla,Bazurto,Las Delicias,La Bodeguita
+Pesos;20,10,3,20
