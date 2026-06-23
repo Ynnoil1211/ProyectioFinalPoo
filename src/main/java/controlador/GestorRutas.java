@@ -36,26 +36,22 @@ public class GestorRutas {
     static {
         //Zona norte
         CONTINGENCIA.put("bocagrande", "Bodeguita (tome T103 o X105)");
-        CONTINGENCIA.put("crespo", "Centro o Bodeguita (tome T102)");
-
+        CONTINGENCIA.put("crespo", "Bodeguita (tome T102)");
+        CONTINGENCIA.put("marbella", "Bodeguita (tome T102)");
         // Zona Centro
         CONTINGENCIA.put("manga", "Las Delicias o Lo Amador (tome X105)");
         CONTINGENCIA.put("pie de la popa", "Las Delicias (camine o tome T101)");
-        CONTINGENCIA.put("torices", "Lo Amador (camine o tome ruta alterna)");
 
         // Zona Suroccidente
-        CONTINGENCIA.put("el bosque", "María Auxiliadora (tome X102)");
-        CONTINGENCIA.put("zaragocilla", "Cuatro Vientos (camine o ruta alterna)");
+        CONTINGENCIA.put("zaragocilla", "Bazurto (x103)");
 
         // Zona Sur
-        CONTINGENCIA.put("san fernando", "Madre Bernarda (tome A104)");
-        CONTINGENCIA.put("blas de lezo", "Castellana (tome A107 o A108)");
-
-        CONTINGENCIA.put("av. pedro romero", "Cuatro Vientos");
-        CONTINGENCIA.put("13 de junio", "Cuatro Vientos");
+        CONTINGENCIA.put("san fernando", "Bazurto (x103)");
 
         // Zona Suroriente
         CONTINGENCIA.put("olaya", "Las Delicias o Ejecutivos (tome X104)");
+        CONTINGENCIA.put("nelson mandela", "Portal (x103)");
+
     }
 
     public GestorRutas() {
