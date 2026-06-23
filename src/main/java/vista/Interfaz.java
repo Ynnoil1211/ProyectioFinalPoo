@@ -1309,14 +1309,12 @@ public class Interfaz extends javax.swing.JFrame {
 
 
     private void recargarMonto(int monto){
-        GestorTarjetas gestor = new GestorTarjetas();
-
         try{
 
-            gestor.recargarTarjeta(tarjetaActual.getNumeroTarjeta(), monto);
+            gestorTarjetas.recargarTarjeta(tarjetaActual.getNumeroTarjeta(), monto);
             //tarjeta.recargar(monto);
 
-            mostrarInformacionTarjeta(gestor.buscarPorNumero(tarjetaActual.getNumeroTarjeta()));
+            mostrarInformacionTarjeta(gestorTarjetas.buscarPorNumero(tarjetaActual.getNumeroTarjeta()));
         }catch (NullPointerException e){
             JOptionPane.showMessageDialog(null, "No hay ninguna tarjeta ingresada", "Error", JOptionPane.ERROR_MESSAGE);
 
@@ -1352,7 +1350,7 @@ public class Interfaz extends javax.swing.JFrame {
 
         try{
             TarjetaUsuario tarjeta = gestorTarjetas.buscarPorNumero(id);
-            return  tarjeta;
+            return tarjeta;
 
         }catch(TarjetaNoEncontradaException e){
             JOptionPane.showMessageDialog(null, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);

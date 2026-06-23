@@ -24,8 +24,13 @@ Saldo:12000.0
 ---Movimientos---
 
 ID:0001
-Saldo:5000.0
+Saldo:145000.0
 ---Movimientos---
++ $10000  (Recarga)
++ $10000  (Recarga)
++ $20000  (Recarga)
++ $50000  (Recarga)
++ $50000  (Recarga)
 
 ID:23
 Saldo:20000.0
